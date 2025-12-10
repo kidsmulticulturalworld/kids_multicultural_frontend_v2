@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Backend reference (if using worktree or symlink)
+/backend
+
+# Old frontend (worktree - should not be committed)
+/old-frontend
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
