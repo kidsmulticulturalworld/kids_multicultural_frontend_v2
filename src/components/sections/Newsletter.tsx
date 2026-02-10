@@ -47,7 +47,7 @@ const Newsletter = () => {
           <Button
             type="submit"
             variant="primary"
-            size="large"
+            size="lg"
             className="bg-[#3491E8] hover:bg-[#2C4F7A]"
           >
             Subscribe now

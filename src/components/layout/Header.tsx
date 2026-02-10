@@ -214,7 +214,7 @@ const Header = () => {
             <Link href="/login" className="text-white hover:text-[#E8E8E8] transition-colors text-sm font-medium">
               Sign in
             </Link>
-            <Button variant="secondary" size="medium" className="bg-white text-[#3491E8] hover:bg-[#E8E8E8] rounded-lg px-4 py-2 text-sm font-medium">
+            <Button variant="secondary" size="md" className="bg-white text-[#3491E8] hover:bg-[#E8E8E8] rounded-lg px-4 py-2 text-sm font-medium">
               Enroll your kid
             </Button>
           </div>

@@ -50,7 +50,7 @@ const Hero = () => {
         <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
           KMW is an international youth academy celebrating diversity through fashion, media, and the arts — helping kids grow in confidence, culture, and creativity.
         </p>
-        <Button variant="primary" size="large" className="bg-[#3491E8] hover:bg-[#2C4F7A]">
+        <Button variant="primary" size="lg" className="bg-[#3491E8] hover:bg-[#2C4F7A]">
           Register your kid
         </Button>
       </div>

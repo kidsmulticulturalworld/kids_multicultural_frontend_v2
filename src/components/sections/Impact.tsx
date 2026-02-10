@@ -50,7 +50,7 @@ const Impact = () => {
         </div>
 
         <div className="text-center">
-          <Button variant="primary" size="large">
+          <Button variant="primary" size="lg">
             View Kids Gallery
           </Button>
         </div>

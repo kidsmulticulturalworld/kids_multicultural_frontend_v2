@@ -122,7 +122,7 @@ const Testimonials = () => {
                           {testimonial.text}
                         </p>
                       </div>
-                      <Button variant="outline" size="small">
+                      <Button variant="outline" size="sm">
                         Learn More
                       </Button>
                     </div>
