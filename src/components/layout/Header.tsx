@@ -1,228 +1,300 @@
-/**
- * Header Component
- * Main navigation header with search and cart
-*/
+"use client";
 
-'use client';
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  FiSearch,
+  FiUser,
+  FiMenu,
+  FiX,
+  FiChevronDown,
+} from "react-icons/fi";
+import { HiShoppingCart } from "react-icons/hi";
+import { cn } from "@/lib/utils";
 
-import { FiSearch } from 'react-icons/fi'
-import React, { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import Button from '../ui/Button';
+interface DropdownItem {
+  label: string;
+  href: string;
+}
 
-const Header = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+const classesItems: DropdownItem[] = [
+  { label: "Modeling", href: "/classes/modeling" },
+  { label: "Acting", href: "/classes/acting" },
+  { label: "Life Skills", href: "/classes/life-skills" },
+];
+
+const eventsItems: DropdownItem[] = [
+  { label: "Upcoming Events", href: "/events/upcoming" },
+  { label: "Ongoing Events", href: "/events/ongoing" },
+];
+
+const navLinks = [
+  { label: "About Us", href: "/about" },
+  { label: "Classes", href: "/classes", dropdown: classesItems },
+  { label: "Magazines", href: "/magazines" },
+  { label: "Discover Events", href: "/events", dropdown: eventsItems },
+  { label: "Shop", href: "/shop" },
+  { label: "Kids", href: "/kids" },
+];
+
+export default function Header() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const classesItems = [
-    { label: 'Modeling', href: '/classes/modeling' },
-    { label: 'Acting', href: '/classes/acting' },
-    { label: 'Life Skills', href: '/classes/life-skills' },
-  ];
+  useEffect(() => {
+    const handleClickOutside = () => setOpenDropdown(null);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
-  const eventsItems = [
-    { label: 'Upcoming Events', href: '/events/upcoming' },
-    { label: 'Ongoing Events', href: '/events/ongoing' },
-  ];
-
-  const shopItems = [
-    { label: 'Hoodie', href: '/shop/hoodie' },
-    { label: 'Hair Bonnet', href: '/shop/hair-bonnet' },
-  ];
-
-  const handleDropdownToggle = (dropdown: string) => {
-    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
+  const handleDropdownEnter = (key: string) => {
+    if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+    setOpenDropdown(key);
   };
 
-  const handleMouseLeave = () => {
-    setOpenDropdown(null);
+  const handleDropdownLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 150);
   };
 
   return (
-    <header className="w-full flex flex-col gap-4 p-2 bg-[#1F3F66]">
-      {/* Top Search Bar */}
-
-
-      <div className="px-16">
-        <div className=" mx-auto flex items-center justify-between gap-4">
-  
-          <div className="flex items-center rounded-xl px-2 pb-2 pt-1  justify-center w-full bg-[#2C4F7A]">
-
-      
-            <div className=" flex items-center justify-center m-auto ">
-
-              <FiSearch className="w-4 h-4 text-[#FFFFFF66]" />
-            </div>
-            
-          <div className="w-full flex items-center justify-center  px-3 -mb-1.5">
-
-
-            <input
-              type="text"
-              placeholder="Search for anything on our website"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full  rounded-lg text-[1.2em] bg-[#2C4F7A] text-[#FFFFFF66] placeholder-[#FFFFFF66] border-0 focus:outline-none"
-              />
-          {/* Search Button */}
-          <div className=" ">
-
-          <button className="border p-2 border-[#FFFFFF66] text-[#FFFFFF] rounded-2xl hover:bg-[#2C4F7A] transition-colors font-medium">
-            Search
-          </button>
-          </div>
-          </div>
+    <header className="w-full bg-header relative z-50">
+      {/* ===================== DESKTOP ===================== */}
+      <div className="hidden lg:block">
+        {/* Top Bar — Search + Cart */}
+        <div className="border-b border-white/10">
+          <div className="max-w-[1320px] mx-auto px-6 py-2.5">
+            <div className="flex items-center gap-3">
+              {/* Search bar */}
+              <div className="flex-1 flex items-center bg-white/[0.08] rounded-lg px-3 py-[7px]">
+                <FiSearch className="w-3.5 h-3.5 text-white/40 shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Search for anything on our website"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 bg-transparent text-white/60 placeholder-white/40 text-xs ml-2 focus:outline-none focus-visible:outline-none"
+                />
+                <button className="border border-white/30 text-white text-xs font-medium rounded-lg px-3.5 py-1 hover:bg-white/10 transition-colors">
+                  Search
+                </button>
               </div>
-          
-          
-      
-          {/* Cart Button */}
-          <button className="p-2.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-          </button>
+
+              {/* Cart icon — filled, centered */}
+              <button className="w-9 h-9 flex items-center justify-center bg-white/[0.08] hover:bg-white/15 rounded-lg transition-colors">
+                <HiShoppingCart className="w-4 h-4 text-white/70" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Nav Bar — Logo + Links + Auth */}
+        <div className="max-w-[1320px] mx-auto px-6 py-2">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <Link href="/" className="shrink-0">
+              <Image
+                src="/Logo.svg"
+                alt="Kids Multicultural World"
+                width={40}
+                height={36}
+              />
+            </Link>
+
+            {/* Nav links in pill */}
+            <nav className="flex items-center bg-white/[0.08] rounded-lg px-1 py-1">
+              {navLinks.map((link) => (
+                <div
+                  key={link.label}
+                  className="relative"
+                  onMouseEnter={() =>
+                    link.dropdown && handleDropdownEnter(link.label)
+                  }
+                  onMouseLeave={() => link.dropdown && handleDropdownLeave()}
+                >
+                  {link.dropdown ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenDropdown(
+                          openDropdown === link.label ? null : link.label
+                        );
+                      }}
+                      className="flex items-center gap-1 text-white/80 hover:text-white text-[13px] font-medium px-3 py-1.5 rounded-md hover:bg-white/[0.08] transition-colors"
+                    >
+                      {link.label}
+                      <FiChevronDown
+                        className={cn(
+                          "w-3 h-3 transition-transform",
+                          openDropdown === link.label && "rotate-180"
+                        )}
+                      />
+                    </button>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="text-white/80 hover:text-white text-[13px] font-medium px-3 py-1.5 rounded-md hover:bg-white/[0.08] transition-colors block"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
+
+                  {/* Dropdown */}
+                  {link.dropdown && openDropdown === link.label && (
+                    <div
+                      className="absolute top-full left-0 mt-1.5 w-44 bg-header-dropdown rounded-lg shadow-lg overflow-hidden z-50 border border-white/10"
+                      onMouseEnter={() => handleDropdownEnter(link.label)}
+                      onMouseLeave={handleDropdownLeave}
+                    >
+                      {link.dropdown.map((item, index) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={cn(
+                            "block px-3.5 py-2.5 text-white/80 hover:bg-white/[0.08] hover:text-white text-[13px] transition-colors",
+                            index < link.dropdown!.length - 1 &&
+                              "border-b border-white/10"
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+
+            {/* Auth */}
+            <div className="flex items-center gap-4">
+              <Link
+                href="/login"
+                className="text-white/80 hover:text-white text-[13px] font-medium transition-colors"
+              >
+                Sign in
+              </Link>
+              <button className="bg-enroll hover:bg-enroll/90 text-white text-[13px] font-semibold px-4 py-1.5 rounded-lg transition-colors">
+                Enroll your kid
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* ===================== MOBILE ===================== */}
+      <div className="lg:hidden">
+        <div className="flex items-center justify-between px-4 py-2.5 relative">
+          {/* Hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="w-9 h-9 flex items-center justify-center bg-white/[0.08] rounded-md"
+          >
+            {mobileMenuOpen ? (
+              <FiX className="w-4 h-4 text-white/70" />
+            ) : (
+              <FiMenu className="w-4 h-4 text-white/70" />
+            )}
+          </button>
 
-<hr />
-
-
-      {/* Main Navigation */}
-      <div className="px-16">
-        <div className=" mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/Logo.svg" alt="Logo" width={50} height={50} />
+          {/* Logo centered */}
+          <Link
+            href="/"
+            className="absolute left-1/2 -translate-x-1/2"
+          >
+            <Image
+              src="/Logo.svg"
+              alt="Kids Multicultural World"
+              width={36}
+              height={32}
+            />
           </Link>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 bg-[#2C4F7A] p-2 rounded-xl relative" onMouseLeave={handleMouseLeave}>
-            <Link href="/about" className="text-white hover:text-[#E8E8E8] transition-colors text-lg font-medium">
-              About Us
-            </Link>
-            
-            {/* Classes Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => handleDropdownToggle('classes')}
-                onMouseEnter={() => setOpenDropdown('classes')}
-                className="text-white hover:text-[#E8E8E8] transition-colors text-lg font-medium flex items-center gap-1"
-              >
-                Classes
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openDropdown === 'classes' && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-[#2C4F7A] rounded-lg shadow-lg z-50 overflow-hidden">
-                  {classesItems.map((item, index) => (
-                    <React.Fragment key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={`block px-4 py-3 text-white hover:bg-[#1F3F66] transition-colors ${
-                          index === 0 ? 'bg-[#1F3F66]' : ''
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                      {index < classesItems.length - 1 && (
-                        <hr className="border-[#FFFFFF33]" />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <Link href="/magazines" className="text-white hover:text-[#E8E8E8] transition-colors text-lg font-medium">
-              Magazines
-            </Link>
-            
-            {/* Discover Events Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => handleDropdownToggle('events')}
-                onMouseEnter={() => setOpenDropdown('events')}
-                className="text-white hover:text-[#E8E8E8] transition-colors text-lg font-medium flex items-center gap-1"
-              >
-                Discover Events
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openDropdown === 'events' && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-[#2C4F7A] rounded-lg shadow-lg z-50 overflow-hidden">
-                  {eventsItems.map((item, index) => (
-                    <React.Fragment key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={`block px-4 py-3 text-white hover:bg-[#1F3F66] transition-colors ${
-                          index === 0 ? 'bg-[#1F3F66]' : ''
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                      {index < eventsItems.length - 1 && (
-                        <hr className="border-[#FFFFFF33]" />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            {/* Shop Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => handleDropdownToggle('shop')}
-                onMouseEnter={() => setOpenDropdown('shop')}
-                className="text-white hover:text-[#E8E8E8] transition-colors text-lg font-medium"
-              >
-                Shop
-              </button>
-              {openDropdown === 'shop' && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-[#2C4F7A] rounded-lg shadow-lg z-50 overflow-hidden">
-                  {shopItems.map((item, index) => (
-                    <React.Fragment key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={`block px-4 py-3 text-white hover:bg-[#1F3F66] transition-colors ${
-                          index === 0 ? 'bg-[#1F3F66]' : ''
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                      {index < shopItems.length - 1 && (
-                        <hr className="border-[#FFFFFF33]" />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            <Link href="/kids" className="text-white hover:text-[#E8E8E8] transition-colors text-lg font-medium">
-              Kids
-            </Link>
-          </nav>
-
-          {/* Auth Buttons */}
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-white hover:text-[#E8E8E8] transition-colors text-sm font-medium">
-              Sign in
-            </Link>
-            <Button variant="secondary" size="md" className="bg-white text-[#3491E8] hover:bg-[#E8E8E8] rounded-lg px-4 py-2 text-sm font-medium">
-              Enroll your kid
-            </Button>
+          {/* Right icons */}
+          <div className="flex items-center gap-1.5">
+            <button className="w-9 h-9 flex items-center justify-center hover:bg-white/[0.08] rounded-md transition-colors">
+              <FiSearch className="w-4 h-4 text-white/60" />
+            </button>
+            <button className="w-9 h-9 flex items-center justify-center bg-white/[0.08] rounded-md">
+              <HiShoppingCart className="w-4 h-4 text-white/70" />
+            </button>
+            <button className="w-9 h-9 flex items-center justify-center bg-white/[0.08] rounded-md">
+              <FiUser className="w-4 h-4 text-white/60" />
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="border-t border-white/10 bg-header-dropdown px-4 py-3 max-h-[80vh] overflow-y-auto">
+            <nav className="flex flex-col gap-0.5">
+              {navLinks.map((link) => (
+                <div key={link.label}>
+                  {link.dropdown ? (
+                    <>
+                      <button
+                        onClick={() =>
+                          setMobileDropdown(
+                            mobileDropdown === link.label ? null : link.label
+                          )
+                        }
+                        className="flex items-center justify-between w-full text-white/80 hover:text-white text-sm font-medium px-2.5 py-2.5 rounded-md hover:bg-white/[0.05] transition-colors"
+                      >
+                        {link.label}
+                        <FiChevronDown
+                          className={cn(
+                            "w-3.5 h-3.5 transition-transform",
+                            mobileDropdown === link.label && "rotate-180"
+                          )}
+                        />
+                      </button>
+                      {mobileDropdown === link.label && (
+                        <div className="pl-3 pb-0.5">
+                          {link.dropdown.map((item) => (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              className="block text-white/60 hover:text-white text-[13px] px-2.5 py-2 rounded-md hover:bg-white/[0.05] transition-colors"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              {item.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="block text-white/80 hover:text-white text-sm font-medium px-2.5 py-2.5 rounded-md hover:bg-white/[0.05] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </nav>
+
+            <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-2.5">
+              <Link
+                href="/login"
+                className="text-white/80 hover:text-white text-sm font-medium px-2.5 py-1.5 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign in
+              </Link>
+              <button className="w-full bg-enroll hover:bg-enroll/90 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                Enroll your kid
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
-};
-
-export default Header;
-
+}

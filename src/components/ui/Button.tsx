@@ -17,21 +17,21 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-white hover:bg-primary-hover shadow-[var(--shadow-blue)] focus-visible:ring-primary",
+    "bg-primary text-white hover:bg-primary-hover shadow-blue focus-visible:ring-primary",
   secondary:
-    "bg-white text-navy border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-100)] focus-visible:ring-[var(--color-gray-300)]",
+    "bg-white text-navy border border-gray-200 hover:bg-gray-100 focus-visible:ring-gray-300",
   outline:
     "border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white focus-visible:ring-primary",
   ghost:
-    "bg-transparent text-[var(--color-text-body)] hover:bg-[var(--color-gray-100)] focus-visible:ring-[var(--color-gray-300)]",
+    "bg-transparent text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-300",
   accent:
     "bg-coral text-white hover:bg-coral-light focus-visible:ring-coral",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "px-4 py-2 text-sm gap-1.5 rounded-[var(--radius-sm)]",
-  md: "px-8 py-3 text-base gap-2 rounded-[var(--radius-md)]",
-  lg: "px-8 py-4 text-lg gap-2.5 rounded-[var(--radius-lg)]",
+  sm: "px-4 py-2 text-sm gap-1.5 rounded-lg",
+  md: "px-8 py-3 text-base gap-2 rounded-md",
+  lg: "px-8 py-4 text-lg gap-2.5 rounded-xl",
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(

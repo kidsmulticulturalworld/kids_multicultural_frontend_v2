@@ -9,11 +9,11 @@ interface SectionProps {
 
 const bgStyles = {
   white: "bg-white",
-  light: "bg-[var(--color-bg-secondary)]",
-  "light-blue": "bg-[var(--color-bg-light-blue)]",
-  dark: "bg-[var(--color-bg-dark)] text-white",
+  light: "bg-bg-secondary",
+  "light-blue": "bg-bg-light-blue",
+  dark: "bg-navy text-white",
   navy: "bg-navy text-white",
-  black: "bg-[var(--color-bg-black)] text-white",
+  black: "bg-bg-black text-white",
 };
 
 export default function Section({
@@ -26,7 +26,7 @@ export default function Section({
     <section
       id={id}
       className={cn(
-        "py-[var(--section-padding-y)] lg:py-[var(--section-padding-y-lg)]",
+        "py-section lg:py-section-lg",
         bgStyles[bg],
         className
       )}

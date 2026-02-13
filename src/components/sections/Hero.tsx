@@ -1,74 +1,183 @@
-/**
- * Hero Section Component
- * Main hero section with background image and CTA
- */
+"use client";
 
-'use client';
+import Image from "next/image";
+import Link from "next/link";
 
-import React from 'react';
-import Image from 'next/image';
-import Button from '../ui/Button';
-
-const Hero = () => {
+export default function Hero() {
   return (
-    <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/hero-bg-image.svg"
-          alt="Hero Background"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-[#2C4F7A]/90"></div>
-      </div>
+    <section className="relative overflow-hidden">
+      {/* ── Background: solid color matching header ── */}
+      <div className="absolute inset-0 z-0 bg-header" />
 
-      {/* Decorative Icons */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
-        {/* Butterfly */}
-        <div className="absolute top-20 left-10 w-12 h-12 opacity-30">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="text-white">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm-2 12v-1h4v1c0 .74-.4 1.4-1 1.75V17h-2v-1.25c-.6-.35-1-1.01-1-1.75zm1-9.93c-3.94.49-7 3.85-7 7.93 0 1.67.69 3.18 1.81 4.26C6.5 16.5 7 15.5 7 14.5c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1-.5 2-1.19 2.76C17.31 16.18 18 14.67 18 13c0-4.08-3.06-7.44-7-7.93z"/>
-          </svg>
-        </div>
-        {/* Camera */}
-        <div className="absolute top-32 right-20 w-10 h-10 opacity-30">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="text-white">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.52 1.21 2.69 2.72 2.97v1.52c-2.1-.2-3.57-1.04-3.57-2.81 0-1.68 1.21-2.85 2.72-2.97V5H9.1v1.69c1.38.32 2.49 1.3 2.49 2.81 0 1.52-1.11 2.49-2.49 2.81v1.52c1.9.2 3.57 1.04 3.57 2.81 0 1.68-1.67 2.61-3.57 2.81V19h1.71v-1.52c1.38-.32 2.49-1.3 2.49-2.81 0-1.52-1.11-2.49-2.49-2.81V10.14z"/>
-          </svg>
-        </div>
-      </div>
+      {/* ── Pink tint — top area (extends down through heading text) ── */}
+      <div
+        className="absolute inset-x-0 top-0 z-1 h-[65%] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 100% 100% at 50% 0%, rgba(255, 105, 180, 0.14) 0%, transparent 60%)",
+        }}
+      />
 
-      {/* Content */}
-      <div className="relative z-20 max-w-4xl mx-auto px-4 text-center text-white">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl cherry-bomb-one-regular mb-6 leading-tight">
-          Raising <span className="text-[#3491E8]">Global Stars</span>.
-          <br />
-          Rooted in <span className="text-[#3491E8]">Culture</span>.
-        </h1>
-        <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
-          KMW is an international youth academy celebrating diversity through fashion, media, and the arts — helping kids grow in confidence, culture, and creativity.
+      {/* ── Pink tint — bottom area (under children, spreads well above their heads) ── */}
+      <div
+        className="absolute inset-x-0 bottom-0 z-1 h-[75%] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 100% 100% at 50% 100%, rgba(255, 105, 180, 0.22) 0%, transparent 65%)",
+        }}
+      />
+
+      {/* ── Grid pattern overlay (28px grid) ── */}
+      <div
+        className="absolute inset-0 z-2 pointer-events-none"
+        style={{
+          backgroundImage: `
+            repeating-linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.06) 0px,
+              rgba(255, 255, 255, 0.06) 1px,
+              transparent 1px,
+              transparent 28px
+            ),
+            repeating-linear-gradient(
+              0deg,
+              rgba(255, 255, 255, 0.06) 0px,
+              rgba(255, 255, 255, 0.06) 1px,
+              transparent 1px,
+              transparent 28px
+            )
+          `,
+          maskImage:
+            "radial-gradient(ellipse 70% 65% at 50% 45%, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 70% 65% at 50% 45%, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)",
+        }}
+      />
+
+      {/* ── Content ── */}
+      <div className="relative z-10 flex flex-col items-center px-6 pt-14 pb-0 lg:px-[92px] lg:pt-20">
+        {/* Hero heading image + brush stroke BEHIND "Culture." */}
+        <div className="relative w-[90%] max-w-[700px] lg:w-[600px] mb-5 lg:mb-6">
+          {/* Blue diagonal brush strokes — z-0 (behind the text image) */}
+          <svg
+            className="absolute bottom-[-3%] right-[5%] w-[46%] h-[22%] z-0 pointer-events-none"
+            viewBox="0 0 240 50"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 44 Q60 38 110 28 Q140 32 170 20 Q200 12 236 6"
+              stroke="#5B9FD5"
+              strokeWidth="10"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <path
+              d="M2 50 Q55 46 105 36 Q138 40 168 28 Q200 20 232 14"
+              stroke="#5B9FD5"
+              strokeWidth="8"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
+          {/* Hero text image — z-10 (on top, transparent bg lets stroke peek through) */}
+          <Image
+            src="/home/hero-word.svg"
+            alt="Kids Multicultural World — Raising Global Stars. Rooted in Culture."
+            width={800}
+            height={320}
+            className="relative z-10 w-full h-auto"
+            priority
+          />
+        </div>
+
+        {/* Subtitle — center on mobile, left-aligned on desktop */}
+        <p className="text-white/70 text-center lg:text-left text-sm lg:text-base leading-relaxed max-w-[560px] mb-7 lg:mb-9">
+          KMW is an international youth academy celebrating diversity through
+          fashion, media, and the arts — helping kids grow in confidence,
+          culture, and creativity.
         </p>
-        <Button variant="primary" size="lg" className="bg-[#3491E8] hover:bg-[#2C4F7A]">
+
+        {/* CTA Button — pill on mobile, rounded-rectangle on desktop */}
+        <Link
+          href="/register"
+          className="inline-flex items-center gap-2.5 bg-enroll hover:bg-enroll/90 text-white font-semibold transition-colors mb-10 lg:mb-14 text-sm px-5 py-2 rounded-full lg:text-[15px] lg:gap-3 lg:pl-7 lg:pr-2.5 lg:py-2.5 lg:rounded-xl"
+        >
           Register your kid
-        </Button>
+          <span className="w-7 h-7 lg:w-9 lg:h-9 flex items-center justify-center bg-white/20 rounded-full">
+            <Image
+              src="/home/arrow-icon.svg"
+              alt=""
+              width={20}
+              height={20}
+              className="w-4 h-4"
+              priority
+            />
+          </span>
+        </Link>
       </div>
 
-      {/* Bottom Children Images */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 flex justify-center gap-8 px-4">
-        <div className="w-32 h-40 md:w-40 md:h-48 relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent rounded-t-full"></div>
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-24 md:w-32 md:h-32 bg-[#3491E8]/20 rounded-full"></div>
+      {/* ── Kids image + decorative elements ── */}
+      <div className="relative z-10 w-full">
+        {/* Teddy bear (happy) — near button on mobile, near kids head on desktop */}
+        <Image
+          src="/home/teddy-happy.svg"
+          alt=""
+          width={96}
+          height={96}
+          className="absolute -top-20 left-[12%] lg:-top-4 lg:left-[26%] w-10 lg:w-[80px] z-20 select-none hero-float"
+          aria-hidden="true"
+          loading="lazy"
+        />
+
+        {/* Camera — close to left child, lower area */}
+        <Image
+          src="/home/camera.svg"
+          alt=""
+          width={120}
+          height={120}
+          className="absolute bottom-[25%] left-[4%] lg:left-[10%] w-16 lg:w-24 z-30 select-none hero-float-slow"
+          aria-hidden="true"
+          loading="lazy"
+        />
+
+        {/* Teddy with balloons — close to right child, upper area */}
+        <Image
+          src="/home/teddy-ballon.svg"
+          alt=""
+          width={96}
+          height={96}
+          className="absolute top-[8%] right-[4%] lg:right-[14%] w-14 lg:w-[80px] z-20 select-none hero-float-delay"
+          aria-hidden="true"
+          loading="lazy"
+        />
+
+        {/* Kids image — large, centered */}
+        <div className="flex justify-center">
+          <Image
+            src="/home/front-view-kids.svg"
+            alt="Children from diverse cultural backgrounds"
+            width={700}
+            height={500}
+            className="w-[80%] lg:w-[48%] h-auto object-contain"
+            loading="lazy"
+            sizes="(min-width: 1024px) 48vw, 80vw"
+          />
         </div>
-        <div className="w-32 h-40 md:w-40 md:h-48 relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent rounded-t-full"></div>
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-24 md:w-32 md:h-32 bg-[#3491E8]/20 rounded-full"></div>
-        </div>
+      </div>
+
+      {/* ── Cloud wave transition — overlaps bottom of kids ── */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 w-full leading-none">
+        <Image
+          src="/white-cloud.svg"
+          alt=""
+          width={1448}
+          height={170}
+          className="w-full h-auto"
+          aria-hidden="true"
+          loading="lazy"
+        />
       </div>
     </section>
   );
-};
-
-export default Hero;
-
+}

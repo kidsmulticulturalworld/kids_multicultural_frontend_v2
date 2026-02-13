@@ -1,75 +1,62 @@
-/**
- * Why Kids Multicultural World Section
- * Features cards with benefits
- */
+import Image from "next/image";
 
-import React from 'react';
-import Cloud from '../ui/Cloud';
+const benefits = [
+  { title: "Real World Exposure", image: "/why/first-child.svg" },
+  { title: "Real World Exposure", image: "/why/second-child.svg" },
+  { title: "Trusted by Families", image: "/why/third-child.svg" },
+  { title: "Seen and Celebrated", image: "/why/fourth-child.svg" },
+];
 
-const WhyKMW = () => {
-  const benefits = [
-    {
-      title: 'Real World Exposure',
-      description: 'Kids get real-world experience in fashion, media, and arts',
-      image: '/images/benefit-1.jpg', // Placeholder
-    },
-    {
-      title: 'Real World Experience',
-      description: 'Hands-on learning opportunities in diverse cultural settings',
-      image: '/images/benefit-2.jpg', // Placeholder
-    },
-    {
-      title: 'Trusted by Families',
-      description: 'Loved and trusted by thousands of families worldwide',
-      image: '/images/benefit-3.jpg', // Placeholder
-    },
-    {
-      title: 'Grow and Celebrated',
-      description: 'Every child is celebrated for their unique talents and culture',
-      image: '/images/benefit-4.jpg', // Placeholder
-    },
-  ];
-
+export default function WhyKMW() {
   return (
-    <section className="py-16 bg-white relative">
-      <Cloud position="top" color="#E8E8E8" size="large" />
-      
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
-        <h2 className="text-4xl md:text-5xl cherry-bomb-one-regular text-center mb-4">
-          Why <span className="text-[#3491E8]">Kids Multicultural World</span>?
+    <section className="py-14 lg:py-20 bg-white">
+      <div className="max-w-[1200px] mx-auto px-6">
+        {/* Heading */}
+        <h2 className="font-display text-center text-[28px] lg:text-[48px] leading-tight mb-4 lg:mb-5">
+          <span className="text-text-heading">Why </span>
+          <span className="text-primary">Kids Multicultural World?</span>
         </h2>
-        <p className="text-center text-[#777777] max-w-3xl mx-auto mb-12 text-lg">
-          Because embracing cultural diversity, fashion, and media can equip kids with exposure, experience, and education. At KMW, we don't just teach — we ignite a lifelong love for diversity and creativity.
+
+        {/* Subtitle */}
+        <p className="text-center text-text-muted text-sm lg:text-base leading-relaxed max-w-[640px] mx-auto mb-10 lg:mb-14">
+          Because raising culturally aware, confident kids starts with exposure,
+          expression, and education. At KMW, we don&apos;t just teach — we
+          ignite a lifelong love for diversity and creativity.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Cards grid — 1 col mobile, 4 col desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 lg:gap-4">
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+              className="relative overflow-hidden rounded-[36px] lg:rounded-[36px] group"
             >
-              <div className="aspect-square bg-gradient-to-br from-[#3491E8]/20 to-[#2C4F7A]/20 flex items-center justify-center">
-                <div className="w-24 h-24 bg-[#3491E8]/30 rounded-full flex items-center justify-center">
-                  <span className="text-4xl">👶</span>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl cherry-bomb-one-regular text-[#2C4F7A] mb-2">
+              {/* Card image — shorter on mobile, taller on desktop */}
+              <div className="aspect-square lg:aspect-3/4 relative">
+                <Image
+                  src={benefit.image}
+                  alt={benefit.title}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                  sizes="(min-width: 1024px) 25vw, 100vw"
+                />
+
+                {/* Bottom gradient overlay */}
+                <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+
+                {/* Label */}
+                <span
+                  className="absolute bottom-4 left-0 right-0 text-center text-white font-display text-lg lg:text-base"
+                  style={{ textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}
+                >
                   {benefit.title}
-                </h3>
-                <p className="text-[#777777] text-sm">
-                  {benefit.description}
-                </p>
+                </span>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-      <Cloud position="bottom" color="#E8E8E8" size="large" />
     </section>
   );
-};
-
-export default WhyKMW;
-
+}
