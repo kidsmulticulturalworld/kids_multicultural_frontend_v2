@@ -111,6 +111,7 @@ export default function Hero() {
               width={20}
               height={20}
               className="w-4 h-4"
+              priority
             />
           </span>
         </Link>
@@ -126,6 +127,7 @@ export default function Hero() {
           height={96}
           className="absolute -top-20 left-[12%] lg:-top-4 lg:left-[26%] w-10 lg:w-[80px] z-20 select-none hero-float"
           aria-hidden="true"
+          loading="lazy"
         />
 
         {/* Camera — close to left child, lower area */}
@@ -136,6 +138,7 @@ export default function Hero() {
           height={120}
           className="absolute bottom-[25%] left-[4%] lg:left-[10%] w-16 lg:w-24 z-30 select-none hero-float-slow"
           aria-hidden="true"
+          loading="lazy"
         />
 
         {/* Teddy with balloons — close to right child, upper area */}
@@ -146,6 +149,7 @@ export default function Hero() {
           height={96}
           className="absolute top-[8%] right-[4%] lg:right-[14%] w-14 lg:w-[80px] z-20 select-none hero-float-delay"
           aria-hidden="true"
+          loading="lazy"
         />
 
         {/* Kids image — large, centered */}
@@ -157,6 +161,7 @@ export default function Hero() {
             height={500}
             className="w-[80%] lg:w-[48%] h-auto object-contain"
             loading="lazy"
+            sizes="(min-width: 1024px) 48vw, 80vw"
           />
         </div>
       </div>
@@ -170,6 +175,7 @@ export default function Hero() {
           height={170}
           className="w-full h-auto"
           aria-hidden="true"
+          loading="lazy"
         />
       </div>
     </section>

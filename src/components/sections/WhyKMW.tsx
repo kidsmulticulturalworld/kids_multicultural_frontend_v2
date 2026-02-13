@@ -39,6 +39,7 @@ export default function WhyKMW() {
                   fill
                   className="object-cover"
                   loading="lazy"
+                  sizes="(min-width: 1024px) 25vw, 100vw"
                 />
 
                 {/* Bottom gradient overlay */}

@@ -1,65 +1,82 @@
-/**
- * Impact Section
- * Shows statistics and gallery of kids
- */
+import Image from "next/image";
+import Link from "next/link";
 
-import React from 'react';
-import Cloud from '../ui/Cloud';
-import Button from '../ui/Button';
-
-const Impact = () => {
-  const galleryImages = Array.from({ length: 12 }, (_, i) => ({
-    id: i + 1,
-    alt: `Impact image ${i + 1}`,
-  }));
-
+export default function Impact() {
   return (
-    <section className="py-16 bg-[#3491E8]/10 relative overflow-hidden">
-      <Cloud position="top" color="white" size="large" />
-      
-      {/* Decorative Stars */}
-      <div className="absolute top-10 left-10 w-16 h-16 opacity-20">
-        <svg viewBox="0 0 24 24" fill="currentColor" className="text-[#2C4F7A]">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-      </div>
-      <div className="absolute bottom-10 right-10 w-16 h-16 opacity-20">
-        <svg viewBox="0 0 24 24" fill="currentColor" className="text-[#2C4F7A]">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
-        <h2 className="text-4xl md:text-5xl cherry-bomb-one-regular text-center mb-4">
-          Impacted Over <span className="text-[#3491E8]">38,000 Kids Globally</span>
+    <section className="-mt-px pt-24 lg:pt-40 pb-24 lg:pb-36 bg-[#E5F1FC]">
+      <div className="max-w-[1200px] mx-auto px-6">
+        {/* Heading */}
+        <h2 className="font-display text-center text-[28px] lg:text-[48px] leading-tight mb-3 lg:mb-4">
+          <span className="text-text-heading">Impacted Over</span>
+          <br />
+          <span className="text-primary">38,000 Kids Globally</span>
         </h2>
-        <p className="text-center text-[#777777] max-w-3xl mx-auto mb-12 text-lg">
-          Our mission is to inspire a new generation — one star at a time, every day.
+
+        {/* Subtitle */}
+        <p className="text-center text-text-muted text-sm lg:text-base leading-relaxed max-w-[600px] mx-auto mb-12 lg:mb-16">
+          Your child&apos;s future is a masterpiece — let&apos;s start painting
+          it today!
         </p>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-          {galleryImages.map((image) => (
-            <div
-              key={image.id}
-              className="aspect-square bg-gradient-to-br from-[#3491E8]/30 to-[#2C4F7A]/30 rounded-lg flex items-center justify-center hover:scale-105 transition-transform"
-            >
-              <span className="text-4xl">👶</span>
-            </div>
-          ))}
+        {/* Stars + Gallery wrapper */}
+        <div className="relative">
+          {/* Left star mascot — peeks above top-left of card */}
+          <Image
+            src="/impact/star-left.svg"
+            alt=""
+            width={163}
+            height={163}
+            className="absolute -left-2 lg:left-6 -top-[30px] lg:-top-[60px] w-[60px] lg:w-[140px] z-0"
+            aria-hidden="true"
+            loading="lazy"
+          />
+
+          {/* Right star mascot — peeks above top-right of card, larger & higher */}
+          <Image
+            src="/impact/star-right.svg"
+            alt=""
+            width={237}
+            height={237}
+            className="absolute -right-2 lg:right-2 -top-[45px] lg:-top-[100px] w-[75px] lg:w-[180px] z-0"
+            aria-hidden="true"
+            loading="lazy"
+          />
+
+          {/* Gallery card */}
+          <div className="relative z-10 bg-white rounded-2xl lg:rounded-3xl shadow-sm border border-gray-200/60 p-2 lg:p-5">
+            {/* Desktop gallery */}
+            <Image
+              src="/impact/Gallery.png"
+              alt="Gallery of kids impacted globally by Kids Multicultural World"
+              width={1264}
+              height={813}
+              className="hidden lg:block w-full h-auto rounded-2xl"
+              loading="lazy"
+              sizes="(min-width: 1024px) 1200px, 100vw"
+            />
+            {/* Mobile gallery */}
+            <Image
+              src="/impact/gallery-mobile.png"
+              alt="Gallery of kids impacted globally by Kids Multicultural World"
+              width={353}
+              height={391}
+              className="block lg:hidden w-full h-auto rounded-xl"
+              loading="lazy"
+              sizes="(max-width: 1023px) 100vw"
+            />
+          </div>
         </div>
 
-        <div className="text-center">
-          <Button variant="primary" size="lg">
-            View Kids Gallery
-          </Button>
+        {/* Gallery link */}
+        <div className="text-center mt-10 lg:mt-14">
+          <Link
+            href="/gallery"
+            className="text-primary font-medium text-sm lg:text-base hover:underline"
+          >
+            Go to Kids Gallery
+          </Link>
         </div>
       </div>
-
-      <Cloud position="bottom" color="white" size="large" />
     </section>
   );
-};
-
-export default Impact;
-
+}
