@@ -3,7 +3,7 @@
  * 
  * Centralized definition of all API endpoints.
  * This makes it easy to update endpoint URLs and maintain consistency.
- * Based on the old frontend's API structure.
+ * Based on the backend Django REST API structure from kids_python_anywhere.
  */
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
@@ -13,7 +13,7 @@ export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: `${API_BASE}/login`,
     REGISTER: `${API_BASE}/register`,
-    LOGOUT: (id?: string) => `${API_BASE}/logout${id ? `/${id}` : ''}`,
+    LOGOUT: `${API_BASE}/logout`,
     RESET_REQUEST: `${API_BASE}/reset_request`,
     RESET_TOKEN: `${API_BASE}/reset_token`,
   },
@@ -44,7 +44,6 @@ export const API_ENDPOINTS = {
     TICKETS: `${API_BASE}/event_tickets`,
     ALL_TICKETS: `${API_BASE}/all_tickets`,
     SINGLE_TICKET: `${API_BASE}/single_tickets`,
-    VERIFY_TICKETS: `${API_BASE}/verify_tickets`,
   },
 
   // Shop
@@ -75,7 +74,7 @@ export const API_ENDPOINTS = {
 
   // Newsletter
   NEWSLETTER: {
-    GET: `${API_BASE}/newsletter`,
+    SUBSCRIBE: `${API_BASE}/newsletter`,
     SEND: `${API_BASE}/send_news_letter`,
   },
 

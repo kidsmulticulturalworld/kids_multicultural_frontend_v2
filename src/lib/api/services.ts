@@ -71,9 +71,9 @@ export const authService = {
   /**
    * Logout user
    */
-  logout: async (id?: string): Promise<void> => {
+  logout: async (): Promise<void> => {
     try {
-      await apiClient.get(API_ENDPOINTS.AUTH.LOGOUT(id), {
+      await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT, {}, {
         headers: getAuthHeaders(),
       });
     } finally {
@@ -148,8 +148,8 @@ export const userService = {
   /**
    * Delete other images
    */
-  deleteImages: async (data: { link: string; [key: string]: any }): Promise<any> => {
-    const response = await apiClient.post(API_ENDPOINTS.DYNAMIC(data.link), data, {
+  deleteImages: async (data: { id: string | number }): Promise<any> => {
+    const response = await apiClient.post(API_ENDPOINTS.USER.DEL_IMAGES, data, {
       headers: getAuthHeaders(),
     });
     return response.data;
@@ -158,8 +158,8 @@ export const userService = {
   /**
    * Delete video
    */
-  deleteVideo: async (data: { link: string; [key: string]: any }): Promise<any> => {
-    const response = await apiClient.post(API_ENDPOINTS.DYNAMIC(data.link), data, {
+  deleteVideo: async (data: { id: string | number }): Promise<any> => {
+    const response = await apiClient.post(API_ENDPOINTS.USER.DEL_VIDEO, data, {
       headers: getAuthHeaders(),
     });
     return response.data;
@@ -225,9 +225,7 @@ export const eventService = {
    * Get event details by ID
    */
   getEventDetail: async (id: string): Promise<any> => {
-    const response = await apiClient.get(API_ENDPOINTS.EVENTS.DETAIL(id), {
-      headers: getAuthHeaders(),
-    });
+    const response = await apiClient.get(API_ENDPOINTS.EVENTS.DETAIL(id));
     return response.data;
   },
 
@@ -242,26 +240,18 @@ export const eventService = {
   },
 
   /**
-   * Get all tickets
+   * Get all tickets (verify tickets by reference ID)
    */
-  getAllTickets: async (data: { link: string; [key: string]: any }): Promise<any> => {
-    const response = await apiClient.post(API_ENDPOINTS.DYNAMIC(data.link), data);
+  getAllTickets: async (data: { id: string }): Promise<any> => {
+    const response = await apiClient.post(API_ENDPOINTS.EVENTS.ALL_TICKETS, data);
     return response.data;
   },
 
   /**
-   * Get single ticket
+   * Get single ticket (verify single ticket by ticket ID)
    */
-  getSingleTicket: async (data: { link: string; [key: string]: any }): Promise<any> => {
-    const response = await apiClient.post(API_ENDPOINTS.DYNAMIC(data.link), data);
-    return response.data;
-  },
-
-  /**
-   * Verify tickets
-   */
-  verifyTickets: async (data: { link: string; [key: string]: any }): Promise<any> => {
-    const response = await apiClient.post(API_ENDPOINTS.DYNAMIC(data.link), data);
+  getSingleTicket: async (data: { id: string }): Promise<any> => {
+    const response = await apiClient.post(API_ENDPOINTS.EVENTS.SINGLE_TICKET, data);
     return response.data;
   },
 };
@@ -281,9 +271,7 @@ export const shopService = {
    * Get shop item details by ID
    */
   getShopDetail: async (id: string): Promise<any> => {
-    const response = await apiClient.get(API_ENDPOINTS.SHOP.DETAIL(id), {
-      headers: getAuthHeaders(),
-    });
+    const response = await apiClient.get(API_ENDPOINTS.SHOP.DETAIL(id));
     return response.data;
   },
 };
@@ -327,10 +315,12 @@ export const orderService = {
   },
 
   /**
-   * Verify payment
+   * Verify payment (requires authentication)
    */
-  verifyPayment: async (data: any): Promise<any> => {
-    const response = await apiClient.post(API_ENDPOINTS.ORDERS.VERIFY_PAYMENT, data);
+  verifyPayment: async (): Promise<any> => {
+    const response = await apiClient.post(API_ENDPOINTS.ORDERS.VERIFY_PAYMENT, {}, {
+      headers: getAuthHeaders(),
+    });
     return response.data;
   },
 
@@ -356,6 +346,7 @@ export const castingService = {
 
   /**
    * Save casting image (multipart/form-data)
+   * Requires: FormData with 'image' file and 'secrete' (client secret from payment)
    */
   saveCastImage: async (formData: FormData): Promise<any> => {
     const response = await apiClient.post(API_ENDPOINTS.CASTING.SAVE_IMG, formData, {
@@ -383,18 +374,10 @@ export const castingService = {
 
 export const newsletterService = {
   /**
-   * Get newsletter
-   */
-  getNewsletter: async (): Promise<any> => {
-    const response = await apiClient.post(API_ENDPOINTS.NEWSLETTER.GET, {});
-    return response.data;
-  },
-
-  /**
    * Subscribe to newsletter
    */
-  subscribe: async (data: { email: string; [key: string]: any }): Promise<any> => {
-    const response = await apiClient.post(API_ENDPOINTS.NEWSLETTER.GET, data);
+  subscribe: async (data: { newsEmail: string }): Promise<any> => {
+    const response = await apiClient.post(API_ENDPOINTS.NEWSLETTER.SUBSCRIBE, data);
     return response.data;
   },
 
