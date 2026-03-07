@@ -15,24 +15,13 @@ export default function DashboardTopBar() {
       <div className="lg:hidden">
         {/* Row 1: Logo + icons */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setDrawerOpen(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 transition-colors"
-              aria-label="Open menu"
-            >
-              <FiMenu className="w-5 h-5 text-white/70" />
-            </button>
-
-            <Link href="/">
-              <Image
-                src="/Logo.svg"
-                alt="Kids Multicultural World"
-                width={40}
-                height={36}
-              />
-            </Link>
-          </div>
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 transition-colors"
+            aria-label="Open menu"
+          >
+            <FiMenu className="w-5 h-5 text-white/70" />
+          </button>
 
           <div className="flex items-center gap-3">
             <button className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 transition-colors">

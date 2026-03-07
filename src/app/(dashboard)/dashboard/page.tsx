@@ -5,6 +5,151 @@ import Image from "next/image";
 
 const tabs = ["Classes", "Magazines", "Upcoming events", "Shop"];
 
+const magazines = [
+  {
+    id: 1,
+    title: "Rising Kid Super Star Magazine",
+    description:
+      "Magazine filled with useful tips and hints for all upcoming & professional models.",
+    image: "/dashboard/front-magazine.svg",
+  },
+  {
+    id: 2,
+    title: "Rising Kid Super Star Magazine",
+    description:
+      "Magazine filled with useful tips and hints for all upcoming & professional models.",
+    image: "/dashboard/front-magazine.svg",
+  },
+  {
+    id: 3,
+    title: "Rising Kid Super Star Magazine",
+    description:
+      "Magazine filled with useful tips and hints for all upcoming & professional models.",
+    image: "/dashboard/front-magazine.svg",
+  },
+  {
+    id: 4,
+    title: "Rising Kid Super Star Magazine",
+    description:
+      "Magazine filled with useful tips and hints for all upcoming & professional models.",
+    image: "/dashboard/front-magazine.svg",
+  },
+  {
+    id: 5,
+    title: "Rising Kid Super Star Magazine",
+    description:
+      "Magazine filled with useful tips and hints for all upcoming & professional models.",
+    image: "/dashboard/front-magazine.svg",
+  },
+  {
+    id: 6,
+    title: "Rising Kid Super Star Magazine",
+    description:
+      "Magazine filled with useful tips and hints for all upcoming & professional models.",
+    image: "/dashboard/front-magazine.svg",
+  },
+  {
+    id: 7,
+    title: "Rising Kid Super Star Magazine",
+    description:
+      "Magazine filled with useful tips and hints for all upcoming & professional models.",
+    image: "/dashboard/front-magazine.svg",
+  },
+  {
+    id: 8,
+    title: "Rising Kid Super Star Magazine",
+    description:
+      "Magazine filled with useful tips and hints for all upcoming & professional models.",
+    image: "/dashboard/front-magazine.svg",
+  },
+];
+
+const events = [
+  {
+    id: 1,
+    title: "Walk the runway! Experience cultural dances.",
+    date: "Fri, May 23rd, 9AM",
+    location: "Victoria Boulevard, Ireland",
+    price: 80,
+    image: "/dashboard/upcoming-events.svg",
+  },
+  {
+    id: 2,
+    title: "Walk the runway! Experience cultural dances.",
+    date: "Fri, May 23rd, 9AM",
+    location: "Victoria Boulevard, Ireland",
+    price: 80,
+    image: "/dashboard/upcoming-events.svg",
+  },
+  {
+    id: 3,
+    title: "Walk the runway! Experience cultural dances.",
+    date: "Fri, May 23rd, 9AM",
+    location: "Victoria Boulevard, Ireland",
+    price: 80,
+    image: "/dashboard/upcoming-events.svg",
+  },
+  {
+    id: 4,
+    title: "Walk the runway! Experience cultural dances.",
+    date: "Fri, May 23rd, 9AM",
+    location: "Victoria Boulevard, Ireland",
+    price: 80,
+    image: "/dashboard/upcoming-events.svg",
+  },
+];
+
+const shopItems = [
+  {
+    id: 1,
+    title: "Official KM World TShirt",
+    price: 80,
+    image: "/dashboard/shopping-image.svg",
+  },
+  {
+    id: 2,
+    title: "Official KM World TShirt",
+    price: 80,
+    image: "/dashboard/shopping-image.svg",
+  },
+  {
+    id: 3,
+    title: "Official KM World TShirt",
+    price: 80,
+    image: "/dashboard/shopping-image.svg",
+  },
+  {
+    id: 4,
+    title: "Official KM World TShirt",
+    price: 80,
+    image: "/dashboard/shopping-image.svg",
+  },
+  {
+    id: 5,
+    title: "Official KM World TShirt",
+    price: 80,
+    image: "/dashboard/shopping-image.svg",
+  },
+  {
+    id: 6,
+    title: "Official KM World TShirt",
+    price: 80,
+    image: "/dashboard/shopping-image.svg",
+  },
+  {
+    id: 7,
+    title: "Official KM World TShirt",
+    price: 80,
+    image: "/dashboard/shopping-image.svg",
+  },
+  {
+    id: 8,
+    title: "Official KM World TShirt",
+    price: 80,
+    image: "/dashboard/shopping-image.svg",
+  },
+];
+
 const classes = [
   {
     id: 1,
@@ -99,8 +244,8 @@ export default function Dashboard() {
       {/* ── Content area — gradient shows through on mobile ── */}
       <div className="px-4 pb-6 lg:px-8 lg:pb-8">
         {/* ── Tabs ── */}
-        <div className="mb-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex items-center gap-2 bg-gray-100/70 rounded-full p-1 w-fit">
+        <div className="mt-4 lg:mt-0 mb-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-gray-200/80 lg:bg-transparent rounded-full lg:rounded-none p-1 lg:p-0">
+          <div className="flex items-center gap-2 lg:bg-gray-100/70 lg:rounded-full lg:p-1 w-fit">
             {tabs.map((tab) => (
               <button
                 key={tab}
@@ -119,8 +264,14 @@ export default function Dashboard() {
 
         {/* ── Tab Description ── */}
         <p className="text-sm text-text-muted mt-4 mb-6">
-          Explore some of our classes and enroll for one that&apos;s best suited
-          for your child
+          {activeTab === "Classes" &&
+            "Explore some of our classes and enroll for one that\u2019s best suited for your child"}
+          {activeTab === "Magazines" &&
+            "Browse our collection of magazines filled with useful tips and inspiration"}
+          {activeTab === "Upcoming events" &&
+            "Explore some of our upcoming events. Come see children perform their best live on the stage"}
+          {activeTab === "Shop" &&
+            "Shop our curated collection of products and merchandise"}
         </p>
 
         {/* ── Class Cards Grid ── */}
@@ -192,12 +343,126 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Placeholder for other tabs */}
-        {activeTab !== "Classes" && (
-          <div className="flex items-center justify-center py-20">
-            <p className="text-text-muted text-sm">
-              {activeTab} content coming soon
-            </p>
+        {/* ── Magazines Tab ── */}
+        {activeTab === "Magazines" && (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+            {magazines.map((mag) => (
+              <div
+                key={mag.id}
+                className="border border-gray-200 rounded-2xl p-4 bg-white shadow-card"
+              >
+                <div className="rounded-xl overflow-hidden mb-4">
+                  <Image
+                    src={mag.image}
+                    alt={mag.title}
+                    width={400}
+                    height={520}
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+
+                <h3 className="text-base font-bold text-text-heading mb-1.5">
+                  {mag.title}
+                </h3>
+                <p className="text-sm text-text-muted leading-relaxed">
+                  {mag.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── Upcoming Events Tab ── */}
+        {activeTab === "Upcoming events" && (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+            {events.map((event) => (
+              <div
+                key={event.id}
+                className="border border-gray-200 rounded-2xl p-4 bg-white shadow-card"
+              >
+                <div className="rounded-xl overflow-hidden mb-4">
+                  <Image
+                    src={event.image}
+                    alt={event.title}
+                    width={400}
+                    height={300}
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+
+                <h3 className="text-base font-bold text-text-heading mb-3">
+                  {event.title}
+                </h3>
+
+                <div className="flex items-center gap-2 mb-2">
+                  <Image
+                    src="/dashboard/icons/calendar-icon.svg"
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="shrink-0"
+                  />
+                  <span className="text-sm text-text-muted">{event.date}</span>
+                </div>
+
+                <div className="flex items-center gap-2 mb-3">
+                  <Image
+                    src="/dashboard/icons/map-marker.svg"
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="shrink-0"
+                  />
+                  <span className="text-sm text-text-muted">
+                    {event.location}
+                  </span>
+                </div>
+
+                <span className="text-2xl font-bold text-primary">
+                  ${event.price}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── Shop Tab ── */}
+        {activeTab === "Shop" && (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+            {shopItems.map((item) => (
+              <div
+                key={item.id}
+                className="border border-gray-200 rounded-2xl p-4 bg-white shadow-card"
+              >
+                <div className="rounded-xl overflow-hidden mb-4">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    width={400}
+                    height={400}
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+
+                <h3 className="text-base font-bold text-text-heading mb-1.5">
+                  {item.title}
+                </h3>
+
+                <span className="block text-2xl font-bold text-primary mb-4">
+                  ${item.price}
+                </span>
+
+                <button className="w-full flex items-center justify-center gap-2 bg-primary text-white font-semibold text-sm py-3.5 rounded-xl">
+                  Add to Cart
+                  <Image
+                    src="/dashboard/icons/cart-icon.svg"
+                    alt=""
+                    width={18}
+                    height={18}
+                  />
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>
