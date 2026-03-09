@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const topNavItems = [
   { icon: "/dashboard/icons/dashboard-icon.svg", href: "/dashboard", label: "Dashboard" },
   { icon: "/dashboard/icons/profile-icon.svg", href: "/dashboard/profile", label: "Profile" },
-  { icon: "/dashboard/icons/ticket-account-icon.svg", href: "/dashboard/community", label: "Community" },
+  { icon: "/dashboard/icons/ticket-account-icon.svg", href: "/dashboard/tickets", label: "Tickets" },
   { icon: "/dashboard/icons/order-bool-descending-variant.svg", href: "/dashboard/enrollments", label: "Enrollments" },
 ];
 

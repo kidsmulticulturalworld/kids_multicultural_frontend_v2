@@ -1,6 +1,6 @@
 /**
  * TypeScript type definitions for API responses
- * 
+ *
  * These types should match the Django backend serializers.
  * Update these as you discover the actual response structures.
  */
@@ -84,6 +84,19 @@ export interface Ticket {
   // Add other ticket fields as needed
 }
 
+// Event Ticket (for My Tickets page)
+export interface EventTicket {
+  id: number;
+  eventName: string;
+  location: string;
+  date: string;
+  time: string;
+  price: number;
+  purchaseDate: string;
+  imageUrl: string;
+  status: "upcoming" | "past";
+}
+
 // Shop Types
 export interface ShopItem {
   id: number;
@@ -141,4 +154,3 @@ export interface PaginatedResponse<T> {
   previous: string | null;
   results: T[];
 }
-
