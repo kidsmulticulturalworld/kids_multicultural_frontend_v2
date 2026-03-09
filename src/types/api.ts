@@ -134,6 +134,20 @@ export interface OrderItem {
   // Add other order item fields as needed
 }
 
+// Shop Order (for My Orders page)
+export type ShopOrderStatus = "delivered" | "shipped" | "processing";
+
+export interface ShopOrder {
+  id: number;
+  orderNumber: string;
+  status: ShopOrderStatus;
+  date: string;
+  paymentMethod: string;
+  paymentLast4: string;
+  total: number;
+  imageUrl: string;
+}
+
 // Payment Types
 export interface PaymentIntent {
   client_secret: string;
