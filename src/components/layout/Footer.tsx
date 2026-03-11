@@ -61,9 +61,9 @@ export default function Footer() {
             <Image
               src="/Logo.svg"
               alt="Kids Multicultural World"
-              width={120}
-              height={108}
-              className="w-[100px] lg:w-[120px] h-auto"
+              width={80}
+              height={72}
+              className="w-[65px] lg:w-[80px] h-auto"
               loading="lazy"
             />
 

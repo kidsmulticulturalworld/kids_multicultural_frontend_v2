@@ -1,6 +1,6 @@
 /**
  * TypeScript type definitions for API responses
- * 
+ *
  * These types should match the Django backend serializers.
  * Update these as you discover the actual response structures.
  */
@@ -84,6 +84,19 @@ export interface Ticket {
   // Add other ticket fields as needed
 }
 
+// Event Ticket (for My Tickets page)
+export interface EventTicket {
+  id: number;
+  eventName: string;
+  location: string;
+  date: string;
+  time: string;
+  price: number;
+  purchaseDate: string;
+  imageUrl: string;
+  status: "upcoming" | "past";
+}
+
 // Shop Types
 export interface ShopItem {
   id: number;
@@ -121,6 +134,50 @@ export interface OrderItem {
   // Add other order item fields as needed
 }
 
+// Shop Order (for My Orders page)
+export type ShopOrderStatus = "delivered" | "shipped" | "processing";
+
+export interface ShopOrder {
+  id: number;
+  orderNumber: string;
+  status: ShopOrderStatus;
+  date: string;
+  paymentMethod: string;
+  paymentLast4: string;
+  total: number;
+  imageUrl: string;
+}
+
+// Settings Types
+export type NotificationChannel = "email" | "sms" | "push";
+
+export interface NotificationPreferences {
+  shopOrderUpdates: boolean;
+  eventsAlerts: boolean;
+  preferredChannel: NotificationChannel;
+}
+
+export interface ChangePasswordForm {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export type CardBrand = "visa" | "mastercard";
+
+export interface PaymentMethod {
+  id: number;
+  brand: CardBrand;
+  last4: string;
+  expiryDate: string;
+  isDefault: boolean;
+}
+
+export interface SettingsData {
+  notifications: NotificationPreferences;
+  paymentMethods: PaymentMethod[];
+}
+
 // Payment Types
 export interface PaymentIntent {
   client_secret: string;
@@ -141,4 +198,3 @@ export interface PaginatedResponse<T> {
   previous: string | null;
   results: T[];
 }
-
