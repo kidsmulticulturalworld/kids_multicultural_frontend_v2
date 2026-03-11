@@ -148,6 +148,36 @@ export interface ShopOrder {
   imageUrl: string;
 }
 
+// Settings Types
+export type NotificationChannel = "email" | "sms" | "push";
+
+export interface NotificationPreferences {
+  shopOrderUpdates: boolean;
+  eventsAlerts: boolean;
+  preferredChannel: NotificationChannel;
+}
+
+export interface ChangePasswordForm {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export type CardBrand = "visa" | "mastercard";
+
+export interface PaymentMethod {
+  id: number;
+  brand: CardBrand;
+  last4: string;
+  expiryDate: string;
+  isDefault: boolean;
+}
+
+export interface SettingsData {
+  notifications: NotificationPreferences;
+  paymentMethods: PaymentMethod[];
+}
+
 // Payment Types
 export interface PaymentIntent {
   client_secret: string;
