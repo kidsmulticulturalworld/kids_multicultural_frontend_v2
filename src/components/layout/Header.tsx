@@ -19,9 +19,9 @@ interface DropdownItem {
 }
 
 const classesItems: DropdownItem[] = [
-  { label: "Modeling", href: "/classes/modeling" },
-  { label: "Acting", href: "/classes/acting" },
-  { label: "Life Skills", href: "/classes/life-skills" },
+  { label: "Modeling", href: "/classes#modeling" },
+  { label: "Acting", href: "/classes#acting" },
+  { label: "Life Skills", href: "/classes#life-skills" },
 ];
 
 const eventsItems: DropdownItem[] = [
@@ -32,7 +32,7 @@ const eventsItems: DropdownItem[] = [
 const navLinks = [
   { label: "About Us", href: "/about" },
   { label: "Classes", href: "/classes", dropdown: classesItems },
-  { label: "Magazines", href: "/magazines" },
+  { label: "Magazines", href: "/magazine" },
   { label: "Discover Events", href: "/events", dropdown: eventsItems },
   { label: "Shop", href: "/shop" },
   { label: "Kids", href: "/kids" },
