@@ -19,9 +19,9 @@ interface DropdownItem {
 }
 
 const classesItems: DropdownItem[] = [
-  { label: "Modeling", href: "/classes/modeling" },
-  { label: "Acting", href: "/classes/acting" },
-  { label: "Life Skills", href: "/classes/life-skills" },
+  { label: "Modeling", href: "/classes#modeling" },
+  { label: "Acting", href: "/classes#acting" },
+  { label: "Life Skills", href: "/classes#life-skills" },
 ];
 
 const eventsItems: DropdownItem[] = [
