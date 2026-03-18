@@ -25,8 +25,8 @@ const classesItems: DropdownItem[] = [
 ];
 
 const eventsItems: DropdownItem[] = [
-  { label: "Upcoming Events", href: "/events/upcoming" },
-  { label: "Ongoing Events", href: "/events/ongoing" },
+  { label: "Upcoming Events", href: "/events?tab=upcoming" },
+  { label: "Ongoing Events", href: "/events?tab=ongoing" },
 ];
 
 const navLinks = [

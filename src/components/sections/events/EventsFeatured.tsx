@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 
-const tabs = ["Upcoming Events", "Ongoing Contests"] as const;
+const tabs = ["Upcoming Events", "Ongoing Events"] as const;
+
+const tabParamMap: Record<string, string> = {
+  upcoming: "Upcoming Events",
+  ongoing: "Ongoing Events",
+};
 
 interface FeaturedEvent {
   title: string;
@@ -23,7 +29,7 @@ const tabContent: Record<string, FeaturedEvent> = {
     price: "$200",
     badge: "Only 10 days left",
   },
-  "Ongoing Contests": {
+  "Ongoing Events": {
     title: "Kids Multicultural Fashion Show 2026",
     image: "/events-ongoing-image.jpg",
     date: "Sat, June 14th, 10AM",
@@ -34,7 +40,15 @@ const tabContent: Record<string, FeaturedEvent> = {
 };
 
 export default function EventsFeatured() {
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>("Upcoming Events");
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && tabParamMap[tab]) {
+      setActiveTab(tabParamMap[tab]);
+    }
+  }, [searchParams]);
 
   const event = tabContent[activeTab];
 
