@@ -7,9 +7,13 @@ const partners = [
   { name: "ABC 7 Chicago", logo: "/trusted/abc-chicago.svg", width: 80, height: 60 },
 ];
 
-export default function PressPartners() {
+interface PressPartnersProps {
+  className?: string;
+}
+
+export default function PressPartners({ className }: PressPartnersProps) {
   return (
-    <section className="py-10 lg:py-14 bg-white">
+    <section className={`py-10 lg:py-14 ${className ?? "bg-white"}`}>
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Section label */}
         <p className="text-center text-gray-500 text-sm lg:text-base mb-8 lg:mb-10">
