@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ClassData } from "./classesData";
 
 interface ClassCardProps {
@@ -29,8 +30,8 @@ export default function ClassCard({ data }: ClassCardProps) {
         </div>
 
         {/* CTA Button */}
-        <a
-          href="#"
+        <Link
+          href="/classes/register"
           className="inline-flex items-center justify-center gap-2 bg-[#3491E8] text-white text-sm font-semibold px-5 py-3.5 rounded-lg hover:bg-[#2b7ed4] transition-colors w-full md:w-auto md:self-start"
         >
           Enroll for this program
@@ -42,7 +43,7 @@ export default function ClassCard({ data }: ClassCardProps) {
             className="w-5 h-5"
             aria-hidden="true"
           />
-        </a>
+        </Link>
       </div>
     </div>
   );
