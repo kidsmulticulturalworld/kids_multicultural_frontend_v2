@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const steps = [
@@ -133,9 +134,12 @@ export default function RegistrationForm() {
     );
   };
 
+  const router = useRouter();
+
   const handleSubmit = () => {
     // TODO: submit form data to API
     console.log("Submitting:", { ...formData, selectedShows, uploadedFile });
+    router.push("/create-account?from=classes");
   };
 
   return (
