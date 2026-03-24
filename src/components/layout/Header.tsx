@@ -12,6 +12,7 @@ import {
 } from "react-icons/fi";
 import { HiShoppingCart } from "react-icons/hi";
 import { cn } from "@/lib/utils";
+import { useCartStore } from "@/stores/useCartStore";
 
 interface DropdownItem {
   label: string;
@@ -44,6 +45,13 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+  const cartItems = useCartStore((s) => s.items);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = () => setOpenDropdown(null);
@@ -86,9 +94,14 @@ export default function Header() {
               </div>
 
               {/* Cart icon — filled, centered */}
-              <button className="w-9 h-9 flex items-center justify-center bg-white/[0.08] hover:bg-white/15 rounded-lg transition-colors">
+              <Link href="/cart" className="relative w-9 h-9 flex items-center justify-center bg-white/[0.08] hover:bg-white/15 rounded-lg transition-colors">
                 <HiShoppingCart className="w-4 h-4 text-white/70" />
-              </button>
+                {hydrated && cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center bg-[#3491E8] text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px]">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
             </div>
           </div>
         </div>
@@ -178,9 +191,9 @@ export default function Header() {
               >
                 Sign in
               </Link>
-              <button className="bg-enroll hover:bg-enroll/90 text-white text-[13px] font-semibold px-4 py-1.5 rounded-lg transition-colors">
+              <Link href="/classes" className="bg-enroll hover:bg-enroll/90 text-white text-[13px] font-semibold px-4 py-1.5 rounded-lg transition-colors">
                 Enroll your kid
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -219,9 +232,14 @@ export default function Header() {
             <button className="w-9 h-9 flex items-center justify-center hover:bg-white/[0.08] rounded-md transition-colors">
               <FiSearch className="w-4 h-4 text-white/60" />
             </button>
-            <button className="w-9 h-9 flex items-center justify-center bg-white/[0.08] rounded-md">
+            <Link href="/cart" className="relative w-9 h-9 flex items-center justify-center bg-white/[0.08] rounded-md">
               <HiShoppingCart className="w-4 h-4 text-white/70" />
-            </button>
+              {hydrated && cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex items-center justify-center bg-[#3491E8] text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px]">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
             <button className="w-9 h-9 flex items-center justify-center bg-white/[0.08] rounded-md">
               <FiUser className="w-4 h-4 text-white/60" />
             </button>
@@ -288,9 +306,9 @@ export default function Header() {
               >
                 Sign in
               </Link>
-              <button className="w-full bg-enroll hover:bg-enroll/90 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+              <Link href="/classes" className="w-full block text-center bg-enroll hover:bg-enroll/90 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
                 Enroll your kid
-              </button>
+              </Link>
             </div>
           </div>
         )}

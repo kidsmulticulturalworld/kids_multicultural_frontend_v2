@@ -57,7 +57,7 @@ export default function GetInvolved() {
                   Now Enrolling for spring programs
                 </p>
                 <Link
-                  href="/register"
+                  href="/classes"
                   className="inline-flex items-center gap-2.5 bg-primary text-white font-semibold text-sm lg:text-[15px] pl-6 pr-2.5 py-2.5 rounded-2xl hover:bg-primary/90 transition-colors"
                 >
                   Register now
