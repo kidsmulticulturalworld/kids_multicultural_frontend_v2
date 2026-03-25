@@ -100,7 +100,7 @@ export default function Hero() {
 
         {/* CTA Button — pill on mobile, rounded-rectangle on desktop */}
         <Link
-          href="/register"
+          href="/classes"
           className="inline-flex items-center gap-2.5 bg-enroll hover:bg-enroll/90 text-white font-semibold transition-colors mb-10 lg:mb-14 text-sm px-5 py-2 rounded-full lg:text-[15px] lg:gap-3 lg:pl-7 lg:pr-2.5 lg:py-2.5 lg:rounded-xl"
         >
           Register your kid

@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import ShopCategoryTabs from "./ShopCategoryTabs";
 import ShopFilters from "./ShopFilters";
 import ShopProductCard from "./ShopProductCard";
 import { products } from "./shopData";
+import { useCartStore } from "@/stores/useCartStore";
 
 export default function ShopProducts() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -25,6 +28,14 @@ export default function ShopProducts() {
     );
   };
 
+  const [hydrated, setHydrated] = useState(false);
+  const cartItems = useCartStore((s) => s.items);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
   // Filter products based on active category
   const filteredProducts =
     activeCategory === "All"
@@ -36,6 +47,44 @@ export default function ShopProducts() {
   return (
     <section className="bg-white py-10 md:py-14 lg:py-20">
       <div className="max-w-[1280px] mx-auto px-5 md:px-6 lg:px-10">
+        {/* Go to Cart bar — shows when items in cart */}
+        {hydrated && cartCount > 0 && (
+          <Link
+            href="/cart"
+            className="mb-6 flex items-center justify-between bg-[#3491E8] text-white rounded-xl px-5 py-3.5 hover:bg-[#2b7ed0] transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <Image
+                src="/dashboard/icons/cart-icon.svg"
+                alt=""
+                width={22}
+                height={22}
+                className="w-5 h-5 brightness-0 invert"
+                aria-hidden="true"
+              />
+              <span className="text-sm font-semibold">
+                {cartCount} {cartCount === 1 ? "item" : "items"} in your cart
+              </span>
+            </div>
+            <span className="text-sm font-semibold flex items-center gap-1.5">
+              Go to Cart
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </span>
+          </Link>
+        )}
+
         {/* Category tabs */}
         <ShopCategoryTabs
           activeCategory={activeCategory}

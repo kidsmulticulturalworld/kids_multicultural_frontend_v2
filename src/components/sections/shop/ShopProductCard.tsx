@@ -1,13 +1,35 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import type { Product } from "./shopData";
+import { useCartStore } from "@/stores/useCartStore";
 
 interface ShopProductCardProps {
   product: Product;
 }
 
 export default function ShopProductCard({ product }: ShopProductCardProps) {
+  const addItem = useCartStore((s) => s.addItem);
+  const items = useCartStore((s) => s.items);
+  const [justAdded, setJustAdded] = useState(false);
+
+  // Extract numeric ID from "product-1" → 1
+  const numericId = parseInt(product.id.replace(/\D/g, ""), 10) || 0;
+  const isInCart = items.some((i) => i.id === numericId);
+
+  const handleAddToCart = () => {
+    addItem({
+      id: numericId,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      type: "shop",
+    });
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1500);
+  };
+
   return (
     <div className="group bg-white rounded-xl overflow-hidden">
       {/* Product image */}
@@ -32,14 +54,23 @@ export default function ShopProductCard({ product }: ShopProductCardProps) {
         </p>
 
         {/* Add to Cart — visible on hover */}
-        <button className="mt-3 w-full flex items-center justify-center gap-2 bg-[#3491E8] hover:bg-[#2b7ed0] text-white text-sm font-medium py-2.5 rounded-lg transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 cursor-pointer">
-          Add to Cart
+        <button
+          onClick={handleAddToCart}
+          className={`mt-3 w-full flex items-center justify-center gap-2 text-sm font-medium py-2.5 rounded-lg transition-all cursor-pointer ${
+            justAdded
+              ? "bg-green-500 text-white"
+              : isInCart
+                ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
+                : "bg-[#3491E8] hover:bg-[#2b7ed0] text-white"
+          }`}
+        >
+          {justAdded ? "Added!" : isInCart ? "In Cart — Add More" : "Add to Cart"}
           <Image
             src="/dashboard/icons/cart-icon.svg"
             alt=""
             width={20}
             height={20}
-            className="w-5 h-5"
+            className={`w-5 h-5 ${isInCart && !justAdded ? "" : ""}`}
             aria-hidden="true"
           />
         </button>
