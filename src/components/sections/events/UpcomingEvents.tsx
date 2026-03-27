@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { upcomingEvents } from "./eventsData";
 
 export default function UpcomingEvents() {
@@ -25,9 +26,10 @@ export default function UpcomingEvents() {
         {/* ── Event cards grid ── */}
         <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {upcomingEvents.map((event) => (
-            <div
+            <Link
               key={event.id}
-              className="bg-[#F5F5F5] rounded-xl overflow-hidden"
+              href={`/events/${event.id}`}
+              className="bg-[#F5F5F5] rounded-xl overflow-hidden transition-shadow hover:shadow-md"
             >
               {/* Event cover image */}
               <div className="p-3 pb-0">
@@ -85,7 +87,7 @@ export default function UpcomingEvents() {
                   </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
