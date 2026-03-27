@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 const tabs = ["Upcoming Events", "Ongoing Events"] as const;
 
@@ -12,6 +13,7 @@ const tabParamMap: Record<string, string> = {
 };
 
 interface FeaturedEvent {
+  id: string;
   title: string;
   image: string;
   date: string;
@@ -22,6 +24,7 @@ interface FeaturedEvent {
 
 const tabContent: Record<string, FeaturedEvent> = {
   "Upcoming Events": {
+    id: "featured-upcoming",
     title: "Walk the runway! Experience cultural dances.",
     image: "/events-ongoing-image.jpg",
     date: "Fri, May 23rd, 9AM",
@@ -30,6 +33,7 @@ const tabContent: Record<string, FeaturedEvent> = {
     badge: "Only 10 days left",
   },
   "Ongoing Events": {
+    id: "featured-ongoing",
     title: "Kids Multicultural Fashion Show 2026",
     image: "/events-ongoing-image.jpg",
     date: "Sat, June 14th, 10AM",
@@ -91,7 +95,10 @@ export default function EventsFeatured() {
           />
 
         {/* ── Featured Event Card ── */}
-        <div className="relative z-10 rounded-2xl overflow-hidden aspect-[5/4] sm:aspect-[4/3] md:aspect-[16/9] lg:aspect-[16/8]">
+        <Link
+          href={`/events/${event.id}`}
+          className="block relative z-10 rounded-2xl overflow-hidden aspect-[5/4] sm:aspect-[4/3] md:aspect-[16/9] lg:aspect-[16/8] transition-shadow hover:shadow-lg"
+        >
           {/* Full-bleed image */}
           <Image
             src={event.image}
@@ -168,7 +175,7 @@ export default function EventsFeatured() {
               {event.price}
             </span>
           </div>
-        </div>
+        </Link>
         </div>
       </div>
     </section>
