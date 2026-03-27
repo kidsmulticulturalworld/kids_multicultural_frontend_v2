@@ -13,13 +13,13 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
         <div className="absolute inset-0 hidden md:flex">
           {/* Left — light bg with decorative elements */}
           <div className="relative w-1/2 bg-[#f5f7fa]">
-            {/* ── Striped quarter circle — top-left corner, clipped ── */}
+            {/* ── Striped circle — top-left corner, clipped ── */}
             <Image
-              src="/dashboard/striped-circle-quatre.svg"
+              src="/auth/striped-circle-top-left.svg"
               alt=""
-              width={168}
-              height={251}
-              className="absolute top-0 left-0 w-24 lg:w-32"
+              width={142}
+              height={127}
+              className="absolute top-0 left-0 w-28 lg:w-36"
               aria-hidden="true"
             />
 
@@ -78,23 +78,23 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
               aria-hidden="true"
             />
 
-            {/* ── Blue star — middle left, larger ── */}
+            {/* ── Blue star — above striped circle, left area ── */}
             <Image
               src="/profile/blue-star.svg"
               alt=""
               width={40}
               height={40}
-              className="absolute top-[42%] left-[14%] w-7 lg:w-9"
+              className="absolute top-[28%] left-[16%] w-10 lg:w-12"
               aria-hidden="true"
             />
 
-            {/* ── Small blue dot — near middle star ── */}
+            {/* ── Small blue dot — near blue star ── */}
             <Image
               src="/profile/blue-circle.svg"
               alt=""
               width={8}
               height={8}
-              className="absolute top-[38%] left-[22%] w-1.5 lg:w-2"
+              className="absolute top-[26%] left-[24%] w-1.5 lg:w-2"
               aria-hidden="true"
             />
 
@@ -104,17 +104,17 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
               alt=""
               width={22}
               height={22}
-              className="absolute top-[35%] left-[55%] w-4 lg:w-5 opacity-40"
+              className="absolute top-[30%] left-[55%] w-6 lg:w-8 opacity-40"
               aria-hidden="true"
             />
 
             {/* ── Large striped circle — bottom-left, partially clipped ── */}
             <Image
-              src="/dashboard/striped-circle-half.svg"
+              src="/testimonials/striped-circle-left.svg"
               alt=""
-              width={225}
-              height={225}
-              className="absolute bottom-[-8%] left-[-12%] w-48 lg:w-64"
+              width={222}
+              height={331}
+              className="absolute bottom-[8%] left-[-4%] w-52 lg:w-72"
               aria-hidden="true"
             />
 
@@ -205,13 +205,13 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
             aria-hidden="true"
           />
 
-          {/* Small striped circle — right edge, top area */}
+          {/* Striped circle — top right area */}
           <Image
-            src="/dashboard/striped-circle-quatre.svg"
+            src="/kids/striped-circle-small.svg"
             alt=""
-            width={80}
-            height={120}
-            className="absolute top-[1%] right-[-3%] w-14"
+            width={48}
+            height={48}
+            className="absolute top-[-1%] right-[2%] w-16"
             aria-hidden="true"
           />
 
