@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import EventsHero from "@/components/sections/events/EventsHero";
 import EventsFeatured from "@/components/sections/events/EventsFeatured";
-import UpcomingEvents from "@/components/sections/events/UpcomingEvents";
 
 export default function EventsPage() {
   return (
@@ -10,7 +9,6 @@ export default function EventsPage() {
       <Suspense>
         <EventsFeatured />
       </Suspense>
-      <UpcomingEvents />
     </>
   );
 }

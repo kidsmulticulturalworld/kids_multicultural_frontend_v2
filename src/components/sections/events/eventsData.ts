@@ -308,6 +308,124 @@ export const eventDetails: Record<string, EventDetail> = {
   },
 };
 
+export interface ContestDetail {
+  id: string;
+  title: string;
+  image: string;
+  dateRange: string;
+  location: string;
+  contestantCount: number;
+  prizes: string[];
+  disclaimer: string;
+  votesOrg: string;
+  deadline: string;
+}
+
+export interface Contestant {
+  id: string;
+  name: string;
+  image: string;
+  totalVotes: number;
+}
+
+export const contestDetails: Record<string, ContestDetail> = {
+  "contest-1": {
+    id: "contest-1",
+    title: "Cutest Kids USA 2025",
+    image: "/events-ongoing-image.jpg",
+    dateRange: "Saturday, June 15, 2025 -Friday, Aug 22, 2025",
+    location: "Online",
+    contestantCount: 20,
+    prizes: [
+      "1st Place Winner Package",
+      "Front Cover -Magazine Feature ⭐⭐⭐⭐⭐",
+      "America Nation Ambassador at your State of residence (You will receive crown & Sash with mentorship for 1year) ⭐⭐⭐⭐⭐",
+      "Automatic free Model Entry to upcoming Fashion Shows as Vip lead on the runway shows⭐⭐⭐⭐",
+      "2 Free copy of magazine",
+    ],
+    disclaimer:
+      "No Refunds, no portion of any vote fees or payments of any kind whatsoever previously provided to Kids Multicultural World shall be owed or be repayable to Purchaser or Voters.",
+    votesOrg: "AMERICA NATION MULTICULTURAL WORLD FOUNDATION ORG.",
+    deadline: "2025-08-22T23:59:59",
+  },
+  "contest-2": {
+    id: "contest-2",
+    title: "Cutest Kids USA 2025 Cutest Kids USA 2025",
+    image: "/events-ongoing-image.jpg",
+    dateRange: "Saturday, June 15, 2025 -Friday, Aug 22, 2025",
+    location: "Online",
+    contestantCount: 20,
+    prizes: [
+      "1st Place Winner Package",
+      "Front Cover -Magazine Feature ⭐⭐⭐⭐⭐",
+      "America Nation Ambassador at your State of residence (You will receive crown & Sash with mentorship for 1year) ⭐⭐⭐⭐⭐",
+      "Automatic free Model Entry to upcoming Fashion Shows as Vip lead on the runway shows⭐⭐⭐⭐",
+      "2 Free copy of magazine",
+    ],
+    disclaimer:
+      "No Refunds, no portion of any vote fees or payments of any kind whatsoever previously provided to Kids Multicultural World shall be owed or be repayable to Purchaser or Voters.",
+    votesOrg: "AMERICA NATION MULTICULTURAL WORLD FOUNDATION ORG.",
+    deadline: "2025-08-22T23:59:59",
+  },
+  "contest-3": {
+    id: "contest-3",
+    title: "US Cutest Kids May 2025 US Cutest Kids May 2025",
+    image: "/events-ongoing-image.jpg",
+    dateRange: "Saturday, June 15, 2025 -Friday, Aug 22, 2025",
+    location: "Online",
+    contestantCount: 20,
+    prizes: [
+      "1st Place Winner Package",
+      "Front Cover -Magazine Feature ⭐⭐⭐⭐⭐",
+      "America Nation Ambassador at your State of residence (You will receive crown & Sash with mentorship for 1year) ⭐⭐⭐⭐⭐",
+      "Automatic free Model Entry to upcoming Fashion Shows as Vip lead on the runway shows⭐⭐⭐⭐",
+      "2 Free copy of magazine",
+    ],
+    disclaimer:
+      "No Refunds, no portion of any vote fees or payments of any kind whatsoever previously provided to Kids Multicultural World shall be owed or be repayable to Purchaser or Voters.",
+    votesOrg: "AMERICA NATION MULTICULTURAL WORLD FOUNDATION ORG.",
+    deadline: "2025-08-22T23:59:59",
+  },
+};
+
+const mockContestant: Omit<Contestant, "id"> = {
+  name: "Mivaan Rana",
+  image: "/to-vote-for.jpg",
+  totalVotes: 25,
+};
+
+export const contestants: Contestant[] = Array.from({ length: 16 }, (_, i) => ({
+  id: `contestant-${i + 1}`,
+  ...mockContestant,
+}));
+
+export const ongoingContests: EventItem[] = [
+  {
+    id: "contest-1",
+    title: "US Cutest Kids May 2025",
+    image: "/upcoming-frontline-image.svg",
+    date: "Fri, May 23rd, 9AM",
+    location: "Victoria Boulevard, Ireland",
+    price: "$50",
+  },
+  {
+    id: "contest-2",
+    title: "Cutest Kids USA 2025 Cutest Kids USA 2025",
+    image: "/upcoming-frontline-image.svg",
+    date: "Fri, May 23rd, 9AM",
+    location: "Victoria Boulevard, Ireland",
+    price: "$50",
+  },
+  {
+    id: "contest-3",
+    title: "US Cutest Kids May 2025 US Cutest Kids May 2025",
+    image: "/upcoming-frontline-image.svg",
+    date: "Fri, May 23rd, 9AM",
+    location: "Victoria Boulevard, Ireland",
+    price: "$50",
+  },
+];
+
 export const upcomingEvents: EventItem[] = [
   {
     id: "event-1",
