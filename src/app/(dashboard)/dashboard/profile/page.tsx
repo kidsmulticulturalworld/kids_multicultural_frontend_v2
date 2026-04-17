@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const profileTabs = [
   { id: "personal-info", label: "Personal Info" },
@@ -19,10 +20,10 @@ const allTalentOptions = [
 ];
 
 const initialProfileData = {
-  firstName: "Martha",
-  lastName: "Simon",
-  email: "Martha.Simon12@yahoo.com",
-  avatar: "/dashboard/profile-image.jpg",
+  firstName: "",
+  lastName: "",
+  email: "",
+  avatar: "/to-vote-for.jpg",
   appearance: {
     gender: "Female",
     eyeColor: "Blue",
@@ -43,9 +44,20 @@ const initialProfileData = {
 };
 
 export default function ProfilePage() {
+  const user = useAuthStore((s) => s.user);
   const [activeTab, setActiveTab] = useState("personal-info");
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(initialProfileData);
+
+  useEffect(() => {
+    if (!user) return;
+    setFormData((prev) => ({
+      ...prev,
+      firstName: user.first_name?.trim() || prev.firstName,
+      lastName: user.last_name?.trim() || prev.lastName,
+      email: user.email?.trim() || prev.email,
+    }));
+  }, [user]);
 
   const updateField = (section: string, field: string, value: string) => {
     setFormData((prev) => ({
@@ -87,7 +99,12 @@ export default function ProfilePage() {
       {/* ── Two-Column Layout (Desktop) / Stacked (Mobile) ── */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* ── Profile Card ── */}
-        <ProfileCard />
+        <ProfileCard
+          firstName={formData.firstName}
+          lastName={formData.lastName}
+          email={formData.email}
+          avatar={formData.avatar}
+        />
 
         {/* ── Tabbed Content Area ── */}
         <div className="flex-1 min-w-0 relative z-10 bg-gray-50 rounded-2xl p-5 lg:p-6">
@@ -384,7 +401,17 @@ function TalentEditor({
 /* ─────────────────────────────────────────────
    Profile Card Component
    ───────────────────────────────────────────── */
-function ProfileCard() {
+function ProfileCard({
+  firstName,
+  lastName,
+  email,
+  avatar,
+}: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatar: string;
+}) {
   return (
     <div className="w-full lg:w-[320px] shrink-0">
       <div
@@ -494,7 +521,7 @@ function ProfileCard() {
             </defs>
             {/* Profile image clipped to scallop shape */}
             <image
-              href={initialProfileData.avatar}
+              href={avatar}
               x="3"
               y="3"
               width="51"
@@ -514,10 +541,10 @@ function ProfileCard() {
 
         {/* ── Name & Email ── */}
         <h2 className="text-xl font-bold text-text-heading mb-1.5 z-1">
-          {initialProfileData.firstName} {initialProfileData.lastName}
+          {[firstName, lastName].filter(Boolean).join(" ") || "Your profile"}
         </h2>
         <p className="text-sm text-primary mb-6 z-1">
-          {initialProfileData.email}
+          {email || "—"}
         </p>
 
         {/* ── Change Profile Photo Button ── */}

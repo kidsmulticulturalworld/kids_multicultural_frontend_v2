@@ -6,6 +6,7 @@
  */
 
 export { default as apiClient } from './client';
+export { getApiBaseUrl, getApiOrigin } from './base-url';
 export { API_ENDPOINTS } from './endpoints';
 export {
   authService,

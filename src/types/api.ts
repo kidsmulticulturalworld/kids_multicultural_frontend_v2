@@ -22,11 +22,17 @@ export interface LoginResponse {
   };
 }
 
+/** Matches Django `registerUser`: username is typically the email. */
 export interface RegisterRequest {
-  username: string;
+  first_name: string;
+  other_names: string;
   email: string;
   password: string;
-  // Add other registration fields as needed
+  phone?: string;
+  zip_code?: string;
+  fullAddress?: string;
+  state?: string;
+  city?: string;
 }
 
 // User & Profile Types

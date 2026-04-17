@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { authService } from "@/lib/api/services";
+import axios from "axios";
 
 const inputClass =
   "w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3491E8] focus:border-transparent";
@@ -15,6 +17,7 @@ export default function LoginForm() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get("from");
@@ -25,13 +28,10 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setError(null);
     setIsLoading(true);
     try {
-      // TODO: integrate with authService.login()
-      console.log("Logging in:", formData);
-
-      // Route based on flow origin
+      await authService.login(formData.email, formData.password);
       if (from === "classes") {
         router.push("/class-payment");
       } else if (from === "shop") {
@@ -39,6 +39,13 @@ export default function LoginForm() {
       } else {
         router.push("/dashboard");
       }
+    } catch (err) {
+      const msg = axios.isAxiosError(err)
+        ? (err.response?.data?.detail as string) ||
+          (err.response?.data?.non_field_errors?.[0] as string) ||
+          "Unable to sign in. Check your email and password."
+        : "Something went wrong. Try again.";
+      setError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -100,6 +107,14 @@ export default function LoginForm() {
 
       {/* ── Form ── */}
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <p
+            className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
         {/* Email */}
         <input
           type="email"

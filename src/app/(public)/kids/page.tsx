@@ -1,6 +1,5 @@
 import Image from "next/image";
-import KidsGrid from "@/components/sections/kids/KidsGrid";
-import { mockKids } from "@/components/sections/kids/kidsData";
+import KidsPageContent from "@/components/sections/kids/KidsPageContent";
 
 export default function KidsPage() {
   return (
@@ -83,7 +82,7 @@ export default function KidsPage() {
 
       {/* Content */}
       <div className="relative z-10 max-w-[1320px] mx-auto px-2 sm:px-6 py-8 sm:py-12 lg:py-16">
-        <KidsGrid kids={mockKids} />
+        <KidsPageContent />
       </div>
     </section>
   );

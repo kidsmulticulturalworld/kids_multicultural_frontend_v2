@@ -1,17 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import TicketTabs, {
   TicketTabValue,
 } from "@/components/dashboard/tickets/TicketTabs";
 import TicketEmptyState from "@/components/dashboard/tickets/TicketEmptyState";
 import TicketCard from "@/components/dashboard/tickets/TicketCard";
-import { mockTickets } from "@/lib/mock-tickets";
+import { eventService } from "@/lib/api/services";
+import { flattenEventTicketsResponse } from "@/lib/api/data-mappers";
 
 export default function TicketsPage() {
   const [activeTab, setActiveTab] = useState<TicketTabValue>("all");
 
-  const filteredTickets = mockTickets.filter((ticket) => {
+  const { data: ticketsRaw, isLoading, isError } = useQuery({
+    queryKey: ["event-tickets"],
+    queryFn: () => eventService.getEventTickets({ page: 1 }),
+  });
+
+  const tickets = useMemo(() => {
+    if (!ticketsRaw || typeof ticketsRaw !== "object") return [];
+    return flattenEventTicketsResponse(ticketsRaw as Record<string, unknown>);
+  }, [ticketsRaw]);
+
+  const filteredTickets = tickets.filter((ticket) => {
     if (activeTab === "all") return true;
     if (activeTab === "upcoming") return ticket.status === "upcoming";
     if (activeTab === "past") return ticket.status === "past";
@@ -38,7 +50,13 @@ export default function TicketsPage() {
         </div>
 
         {/* Ticket list or empty state */}
-        {filteredTickets.length === 0 ? (
+        {isLoading ? (
+          <p className="text-sm text-text-muted">Loading tickets\u2026</p>
+        ) : isError ? (
+          <p className="text-sm text-red-600">
+            Could not load tickets. Please try again.
+          </p>
+        ) : filteredTickets.length === 0 ? (
           <TicketEmptyState />
         ) : (
           <div className="flex flex-col gap-4 lg:max-w-5xl">

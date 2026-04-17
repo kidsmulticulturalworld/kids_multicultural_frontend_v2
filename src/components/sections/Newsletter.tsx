@@ -1,15 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { newsletterService } from "@/lib/api/services";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">(
+    "idle"
+  );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle newsletter subscription
-    console.log("Newsletter subscription:", email);
-    setEmail("");
+    setStatus("loading");
+    try {
+      await newsletterService.subscribe({ newsEmail: email });
+      setStatus("ok");
+      setEmail("");
+    } catch {
+      setStatus("err");
+    }
   };
 
   return (
@@ -88,11 +97,22 @@ export default function Newsletter() {
             />
             <button
               type="submit"
-              className="shrink-0 bg-white/10 hover:bg-white/15 text-white font-medium text-xs lg:text-[15px] px-3 lg:px-6 py-2 lg:py-2.5 rounded-xl lg:rounded-2xl border border-white/5 transition-colors"
+              disabled={status === "loading"}
+              className="shrink-0 bg-white/10 hover:bg-white/15 disabled:opacity-60 text-white font-medium text-xs lg:text-[15px] px-3 lg:px-6 py-2 lg:py-2.5 rounded-xl lg:rounded-2xl border border-white/5 transition-colors"
             >
-              Subscribe now
+              {status === "loading" ? "…" : "Subscribe now"}
             </button>
           </form>
+          {status === "ok" && (
+            <p className="text-emerald-200/90 text-sm mt-4" role="status">
+              Thanks — you&apos;re on the list.
+            </p>
+          )}
+          {status === "err" && (
+            <p className="text-red-200 text-sm mt-4" role="alert">
+              Could not subscribe right now. Try again later.
+            </p>
+          )}
         </div>
       </div>
     </section>

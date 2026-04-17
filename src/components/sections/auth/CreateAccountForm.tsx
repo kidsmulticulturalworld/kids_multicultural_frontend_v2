@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
+import { authService } from "@/lib/api/services";
 
 const inputClass =
   "w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3491E8] focus:border-transparent";
@@ -18,6 +20,7 @@ export default function CreateAccountForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get("from");
@@ -30,14 +33,25 @@ export default function CreateAccountForm() {
     e.preventDefault();
     if (!agreedToTerms) return;
 
+    setError(null);
     setIsLoading(true);
     try {
-      // TODO: integrate with authService.register()
-      console.log("Creating account:", formData);
+      await authService.register({
+        first_name: formData.firstName,
+        other_names: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      });
       const successUrl = from
         ? `/account-success?from=${from}`
         : "/account-success";
       router.push(successUrl);
+    } catch (err) {
+      const msg = axios.isAxiosError(err)
+        ? (err.response?.data?.detail as string) ||
+          "Could not create an account. This email may already be registered."
+        : "Something went wrong. Try again.";
+      setError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -99,6 +113,14 @@ export default function CreateAccountForm() {
 
       {/* ── Form ── */}
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <p
+            className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
         {/* First + Last name row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <input

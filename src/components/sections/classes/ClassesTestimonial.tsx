@@ -55,7 +55,7 @@ export default function ClassesTestimonial() {
                 </clipPath>
               </defs>
               <image
-                href="/dashboard/profile-image.jpg"
+                href="/to-vote-for.jpg"
                 width="232"
                 height="231"
                 clipPath="url(#scallop-clip)"

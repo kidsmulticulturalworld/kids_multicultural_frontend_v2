@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { useState } from "react";
+import AuthHydrate from "@/components/providers/AuthHydrate";
 
 export default function QueryProvider({
   children,
@@ -25,6 +26,7 @@ export default function QueryProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthHydrate />
       {children}
     </QueryClientProvider>
   );

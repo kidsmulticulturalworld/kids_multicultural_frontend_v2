@@ -8,6 +8,12 @@ import type { Kid } from "./kidsData";
 interface KidsGridProps {
   kids: Kid[];
   perPage?: number;
+  /** Server-side pagination: show all `kids` for the current API page. */
+  pagination?: {
+    page: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+  };
 }
 
 function Pagination({
@@ -80,17 +86,35 @@ function Pagination({
   );
 }
 
-export default function KidsGrid({ kids, perPage = 18 }: KidsGridProps) {
+export default function KidsGrid({
+  kids,
+  perPage = 18,
+  pagination,
+}: KidsGridProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedKid, setSelectedKid] = useState<Kid | null>(null);
-  const totalPages = Math.ceil(kids.length / perPage);
 
-  const startIdx = (currentPage - 1) * perPage;
-  const currentKids = kids.slice(startIdx, startIdx + perPage);
+  const isApiPaged = Boolean(pagination);
+  const totalPages = isApiPaged
+    ? pagination!.totalPages
+    : Math.ceil(kids.length / perPage);
+
+  const currentPageResolved = isApiPaged ? pagination!.page : currentPage;
+
+  const currentKids = isApiPaged
+    ? kids
+    : kids.slice(
+        (currentPage - 1) * perPage,
+        (currentPage - 1) * perPage + perPage
+      );
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (isApiPaged) {
+      pagination!.onPageChange(page);
+    } else {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -110,7 +134,7 @@ export default function KidsGrid({ kids, perPage = 18 }: KidsGridProps) {
 
       {totalPages > 1 && (
         <Pagination
-          currentPage={currentPage}
+          currentPage={currentPageResolved}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />

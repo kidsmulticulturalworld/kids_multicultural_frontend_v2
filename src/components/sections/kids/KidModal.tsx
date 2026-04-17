@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
 import type { Kid } from "./kidsData";
+import { userService } from "@/lib/api/services";
+import { mapKidsDetailToKid } from "@/lib/api/data-mappers";
 
 const SCALLOP_PATH =
   "M22.6208 3.27441C25.7555 0.241889 30.7302 0.24189 33.8649 3.27441C35.2141 4.57954 37.0903 5.18868 38.9489 4.92578C43.2674 4.31497 47.292 7.23929 48.0456 11.5352C48.3699 13.3841 49.5299 14.9795 51.1882 15.8594C55.0408 17.9036 56.578 22.6354 54.6628 26.5537C53.8384 28.2402 53.8384 30.2129 54.6628 31.8994C56.578 35.8177 55.0408 40.5496 51.1882 42.5938C49.5299 43.4736 48.3699 45.069 48.0456 46.918C47.292 51.2138 43.2674 54.1382 38.9489 53.5273C37.0903 53.2644 35.2141 53.8736 33.8649 55.1787C30.7302 58.2112 25.7555 58.2112 22.6208 55.1787C21.2716 53.8736 19.3955 53.2645 17.5368 53.5273C13.2183 54.1382 9.19371 51.2138 8.44012 46.918C8.11579 45.069 6.9558 43.4736 5.29755 42.5938C1.44491 40.5496 -0.0923247 35.8177 1.82294 31.8994C2.64734 30.2129 2.64734 28.2402 1.82294 26.5537C-0.0923258 22.6354 1.44491 17.9036 5.29755 15.8594C6.9558 14.9795 8.11579 13.3841 8.44012 11.5352C9.19371 7.23929 13.2183 4.31497 17.5368 4.92578C19.3955 5.18868 21.2716 4.57954 22.6208 3.27441Z";
@@ -12,16 +15,29 @@ interface KidModalProps {
   onClose: () => void;
 }
 
-const detailRows = (kid: Kid) => [
-  { label: "Gender", value: kid.gender },
-  { label: "Height", value: kid.height },
-  { label: "Weight", value: kid.weight },
-  { label: "Eye color", value: kid.eyeColor },
-  { label: "Hair", value: kid.hair },
-  { label: "Dress size", value: kid.dressSize },
+const detailRows = (k: Kid) => [
+  { label: "Gender", value: k.gender },
+  { label: "Height", value: k.height },
+  { label: "Weight", value: k.weight },
+  { label: "Eye color", value: k.eyeColor },
+  { label: "Hair", value: k.hair },
+  { label: "Dress size", value: k.dressSize },
 ];
 
 export default function KidModal({ kid, onClose }: KidModalProps) {
+  const { data: detailRaw } = useQuery({
+    queryKey: ["kids-details", kid.id],
+    queryFn: () => userService.getKidsDetails(kid.id),
+    enabled: Boolean(kid.id),
+  });
+
+  const displayKid = useMemo(() => {
+    if (detailRaw && typeof detailRaw === "object") {
+      return mapKidsDetailToKid(detailRaw as Record<string, unknown>, kid.id);
+    }
+    return kid;
+  }, [detailRaw, kid]);
+
   const gradientId = `modal-gradient-${kid.id}`;
   const clipId = `modal-clip-${kid.id}`;
 
@@ -142,7 +158,7 @@ export default function KidModal({ kid, onClose }: KidModalProps) {
                 </clipPath>
               </defs>
               <image
-                href={kid.image}
+                href={displayKid.image}
                 x="0"
                 y="0"
                 width="56"
@@ -160,16 +176,16 @@ export default function KidModal({ kid, onClose }: KidModalProps) {
 
             {/* Age badge */}
             <div className="absolute bottom-4 right-2 sm:right-4 bg-[#3491E8] text-white text-xs sm:text-sm font-bold px-5 py-1.5 rounded-full border-2 border-white shadow-sm">
-              AGE: {kid.age}
+              AGE: {displayKid.age}
             </div>
           </div>
 
           {/* Name and ethnicity */}
           <h3 className="mt-3 text-xl sm:text-2xl font-bold text-gray-900 text-center">
-            {kid.name}
+            {displayKid.name}
           </h3>
           <p className="mt-1.5 text-sm sm:text-base text-gray-500 text-center">
-            {kid.ethnicity}
+            {displayKid.ethnicity}
           </p>
 
           {/* Details table */}
@@ -182,7 +198,7 @@ export default function KidModal({ kid, onClose }: KidModalProps) {
             <div className="absolute -left-2 bottom-20 w-2 h-2 rounded-full bg-[#B9EEFF] opacity-60" aria-hidden="true" />
 
             <div className="border border-gray-200 rounded-xl overflow-hidden bg-white/80">
-            {detailRows(kid).map((row, idx) => (
+            {detailRows(displayKid).map((row, idx) => (
               <div
                 key={row.label}
                 className={`flex items-center justify-between px-4 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base ${

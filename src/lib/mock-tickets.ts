@@ -1,59 +1,17 @@
 import { EventTicket } from "@/types/api";
 
-export const mockTickets: EventTicket[] = [
-  {
-    id: 1,
-    eventName: "Kids Fashion Parade Showdown",
-    location: "Palo Alto Convention Center",
-    date: "Wed, May 5th, 2025",
-    time: "3:00 PM WAT",
-    price: 129.99,
-    purchaseDate: "Sunday, April 20, 2025",
-    imageUrl: "/dashboard/ticket-image.svg",
-    status: "upcoming",
-  },
-  {
-    id: 2,
-    eventName: "Kids Fashion Parade Showdown",
-    location: "Palo Alto Convention Center",
-    date: "Wed, May 5th, 2025",
-    time: "3:00 PM WAT",
-    price: 129.99,
-    purchaseDate: "Sunday, April 20, 2025",
-    imageUrl: "/dashboard/ticket-image.svg",
-    status: "upcoming",
-  },
-  {
-    id: 3,
-    eventName: "Kids Fashion Parade Showdown",
-    location: "Palo Alto Convention Center",
-    date: "Wed, May 5th, 2025",
-    time: "3:00 PM WAT",
-    price: 129.99,
-    purchaseDate: "Sunday, April 20, 2025",
-    imageUrl: "/dashboard/ticket-image.svg",
-    status: "upcoming",
-  },
-  {
-    id: 4,
-    eventName: "Little Stars Talent Show",
-    location: "Lagos Cultural Center",
-    date: "Sat, Jan 15th, 2025",
-    time: "10:00 AM WAT",
-    price: 79.99,
-    purchaseDate: "Friday, December 20, 2024",
-    imageUrl: "/dashboard/ticket-image.svg",
-    status: "past",
-  },
-  {
-    id: 5,
-    eventName: "Multicultural Kids Festival",
-    location: "Brooklyn Arts Center, New York",
-    date: "Sun, Feb 10th, 2025",
-    time: "12:00 PM EST",
-    price: 49.99,
-    purchaseDate: "Monday, January 27, 2025",
-    imageUrl: "/dashboard/ticket-image.svg",
-    status: "past",
-  },
-];
+/**
+ * Legacy mock tickets — not used; My Tickets loads `POST /api/event_tickets` via
+ * `eventService.getEventTickets` and `flattenEventTicketsResponse`.
+ *
+ * Original mock data (do not delete):
+ * ─────────────────────────────────────────────────────────────────────────────
+ * [
+ *   {
+ *     id: 1,
+ *     eventName: "Kids Fashion Parade Showdown",
+ *     ...
+ *   },
+ * ]
+ */
+export const mockTickets: EventTicket[] = [];

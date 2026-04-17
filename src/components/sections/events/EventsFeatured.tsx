@@ -1,10 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { upcomingEvents, ongoingContests } from "./eventsData";
+import { useQuery } from "@tanstack/react-query";
+import { eventService, contestService } from "@/lib/api/services";
+import {
+  mapEventViewRow,
+  mapContestListRow,
+  normalizeArrayResponse,
+} from "@/lib/api/data-mappers";
 
 const tabs = ["Upcoming Events", "Ongoing Contests"] as const;
 type Tab = (typeof tabs)[number];
@@ -24,19 +30,67 @@ interface FeaturedEvent {
   badge: string;
 }
 
-const featuredEvent: FeaturedEvent = {
-  id: "featured-upcoming",
-  title: "Walk the runway! Experience cultural dances.",
-  image: "/events-ongoing-image.jpg",
-  date: "Fri, May 23rd, 9AM",
-  location: "Victoria Boulevard, Ireland",
-  price: "$200",
-  badge: "Only 10 days left",
-};
+interface EventCardItem {
+  id: string;
+  title: string;
+  image: string;
+  date: string;
+  location: string;
+  price: string;
+}
 
 export default function EventsFeatured() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<Tab>("Upcoming Events");
+
+  const { data: eventsRaw, isLoading: eventsLoading } = useQuery({
+    queryKey: ["event-view"],
+    queryFn: () => eventService.getEvents(),
+  });
+
+  const { data: contestsRaw, isLoading: contestsLoading } = useQuery({
+    queryKey: ["all-contest"],
+    queryFn: () => contestService.getAllContests(),
+  });
+
+  const upcomingEvents = useMemo(() => {
+    const rows = normalizeArrayResponse(eventsRaw, [
+      "events",
+      "event",
+      "results",
+      "data",
+    ]);
+    return rows.map((r) => mapEventViewRow(r as Record<string, unknown>));
+  }, [eventsRaw]);
+
+  const ongoingContests = useMemo(() => {
+    const rows = normalizeArrayResponse(contestsRaw, [
+      "contests",
+      "results",
+      "data",
+    ]);
+    if (rows.length === 0 && Array.isArray(contestsRaw)) {
+      return (contestsRaw as unknown[]).map((r) =>
+        mapContestListRow(r as Record<string, unknown>)
+      );
+    }
+    return rows.map((r) => mapContestListRow(r as Record<string, unknown>));
+  }, [contestsRaw]);
+
+  const featuredEvent: FeaturedEvent | null =
+    upcomingEvents.length > 0
+      ? {
+          id: upcomingEvents[0].id,
+          title: upcomingEvents[0].title,
+          image: upcomingEvents[0].image,
+          date: upcomingEvents[0].date,
+          location: upcomingEvents[0].location,
+          price: upcomingEvents[0].price,
+          badge: upcomingEvents[0].badge,
+        }
+      : null;
+
+  const gridUpcoming = upcomingEvents.slice(1);
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -48,11 +102,11 @@ export default function EventsFeatured() {
   return (
     <section className="bg-white py-10 md:py-14 lg:py-20">
       <div className="max-w-[1280px] mx-auto px-5 md:px-6 lg:px-10">
-        {/* ── Tabs ── */}
         <div className="flex gap-6 mb-12 md:mb-16 lg:mb-20">
           {tabs.map((tab) => (
             <button
               key={tab}
+              type="button"
               onClick={() => setActiveTab(tab)}
               className={`pb-3 text-sm md:text-base font-medium transition-colors cursor-pointer ${
                 activeTab === tab
@@ -65,23 +119,58 @@ export default function EventsFeatured() {
           ))}
         </div>
 
-        {/* ── Tab content ── */}
         {activeTab === "Upcoming Events" ? (
-          <UpcomingContent event={featuredEvent} />
+          <UpcomingContent
+            featuredEvent={featuredEvent}
+            gridEvents={gridUpcoming}
+            loading={eventsLoading}
+            empty={!eventsLoading && upcomingEvents.length === 0}
+          />
         ) : (
-          <OngoingContestsContent />
+          <OngoingContestsContent
+            contests={ongoingContests}
+            loading={contestsLoading}
+          />
         )}
       </div>
     </section>
   );
 }
 
-/* ── Upcoming Events: Featured card + event grid ── */
+function UpcomingContent({
+  featuredEvent,
+  gridEvents,
+  loading,
+  empty,
+}: {
+  featuredEvent: FeaturedEvent | null;
+  gridEvents: EventCardItem[];
+  loading: boolean;
+  empty: boolean;
+}) {
+  if (loading) {
+    return (
+      <p className="text-sm text-gray-500 py-8">Loading events\u2026</p>
+    );
+  }
 
-function UpcomingContent({ event }: { event: FeaturedEvent }) {
+  if (empty) {
+    return (
+      <p className="text-sm text-gray-500 py-8">
+        No upcoming events listed yet.{" "}
+        <Link href="/events" className="text-blue-500 font-medium underline">
+          Check back soon
+        </Link>
+      </p>
+    );
+  }
+
+  if (!featuredEvent) {
+    return null;
+  }
+
   return (
     <>
-      {/* Featured Event */}
       <div className="relative">
         <div className="mb-6 md:mb-8">
           <h2 className="font-display text-2xl md:text-3xl lg:text-[40px]">
@@ -89,7 +178,6 @@ function UpcomingContent({ event }: { event: FeaturedEvent }) {
           </h2>
         </div>
 
-        {/* Bear mascot */}
         <Image
           src="/teddy-bear-events.svg"
           alt=""
@@ -99,14 +187,13 @@ function UpcomingContent({ event }: { event: FeaturedEvent }) {
           aria-hidden="true"
         />
 
-        {/* Featured Event Card */}
         <Link
-          href={`/events/${event.id}`}
+          href={`/events/${featuredEvent.id}`}
           className="block relative z-10 rounded-2xl overflow-hidden aspect-[5/4] sm:aspect-[4/3] md:aspect-[16/9] lg:aspect-[16/8] transition-shadow hover:shadow-lg"
         >
           <Image
-            src={event.image}
-            alt={event.title}
+            src={featuredEvent.image}
+            alt={featuredEvent.title}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 1280px"
@@ -121,7 +208,6 @@ function UpcomingContent({ event }: { event: FeaturedEvent }) {
             }}
           />
 
-          {/* Badge */}
           <div className="absolute top-3 right-3 md:top-6 md:right-6 z-10 flex items-center gap-1.5 bg-[#BD123D]/60 text-white md:bg-[#BD123D]/20 md:text-[#BD123D] text-[10px] md:text-sm font-medium px-2.5 py-1.5 md:px-4 md:py-2.5 rounded-full">
             <Image
               src="/dashboard/icons/danger-clock.svg"
@@ -131,14 +217,13 @@ function UpcomingContent({ event }: { event: FeaturedEvent }) {
               className="w-3.5 h-3.5"
               aria-hidden="true"
             />
-            {event.badge}
+            {featuredEvent.badge}
           </div>
 
-          {/* Event details */}
           <div className="absolute bottom-0 left-0 right-0 z-10 p-5 md:p-6 lg:p-8 flex flex-col md:flex-row md:items-end md:justify-between gap-3 md:gap-4">
             <div>
               <h3 className="text-white text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3">
-                {event.title}
+                {featuredEvent.title}
               </h3>
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center gap-2 text-gray-300 text-sm">
@@ -148,24 +233,23 @@ function UpcomingContent({ event }: { event: FeaturedEvent }) {
                     <line x1="8" y1="2" x2="8" y2="6" />
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
-                  {event.date}
+                  {featuredEvent.date}
                 </div>
                 <div className="flex items-center gap-2 text-gray-300 text-sm">
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
                   </svg>
-                  {event.location}
+                  {featuredEvent.location}
                 </div>
               </div>
             </div>
             <span className="text-blue-500 text-3xl md:text-4xl lg:text-[42px] font-bold shrink-0">
-              {event.price}
+              {featuredEvent.price}
             </span>
           </div>
         </Link>
       </div>
 
-      {/* Upcoming Events Grid */}
       <div className="relative mt-14 md:mt-20">
         <div className="mb-8 md:mb-10">
           <h2 className="font-display text-2xl md:text-3xl lg:text-[40px]">
@@ -173,7 +257,6 @@ function UpcomingContent({ event }: { event: FeaturedEvent }) {
           </h2>
         </div>
 
-        {/* Slingshot kid mascot */}
         <Image
           src="/slingshot.svg"
           alt=""
@@ -183,15 +266,25 @@ function UpcomingContent({ event }: { event: FeaturedEvent }) {
           aria-hidden="true"
         />
 
-        <EventCardGrid events={upcomingEvents} basePath="/events" />
+        {gridEvents.length > 0 ? (
+          <EventCardGrid events={gridEvents} basePath="/events" />
+        ) : (
+          <p className="relative z-10 text-sm text-gray-500">
+            More events will appear here as they are announced.
+          </p>
+        )}
       </div>
     </>
   );
 }
 
-/* ── Ongoing Contests: heading + contest grid ── */
-
-function OngoingContestsContent() {
+function OngoingContestsContent({
+  contests,
+  loading,
+}: {
+  contests: ReturnType<typeof mapContestListRow>[];
+  loading: boolean;
+}) {
   return (
     <div className="relative">
       <div className="mb-8 md:mb-10">
@@ -200,7 +293,6 @@ function OngoingContestsContent() {
         </h2>
       </div>
 
-      {/* Kid with megaphone mascot */}
       <Image
         src="/ongoing-contest-image.svg"
         alt=""
@@ -210,14 +302,26 @@ function OngoingContestsContent() {
         aria-hidden="true"
       />
 
-      <EventCardGrid events={ongoingContests} basePath="/events/contest" />
+      {loading ? (
+        <p className="relative z-10 text-sm text-gray-500 py-6">Loading\u2026</p>
+      ) : contests.length === 0 ? (
+        <p className="relative z-10 text-sm text-gray-500 py-6">
+          No contests at the moment.
+        </p>
+      ) : (
+        <EventCardGrid events={contests} basePath="/events/contest" />
+      )}
     </div>
   );
 }
 
-/* ── Shared card grid used by both tabs ── */
-
-function EventCardGrid({ events, basePath }: { events: typeof upcomingEvents; basePath: string }) {
+function EventCardGrid({
+  events,
+  basePath,
+}: {
+  events: EventCardItem[];
+  basePath: string;
+}) {
   return (
     <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       {events.map((event) => (
@@ -251,18 +355,18 @@ function EventCardGrid({ events, basePath }: { events: typeof upcomingEvents; ba
                     <line x1="8" y1="2" x2="8" y2="6" />
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
-                  {event.date}
+                  {event.date || "—"}
                 </div>
                 <div className="flex items-center gap-1.5 text-gray-500 text-xs">
                   <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
                   </svg>
-                  {event.location}
+                  {event.location || "—"}
                 </div>
               </div>
 
               <span className="text-blue-500 text-2xl font-bold shrink-0">
-                {event.price}
+                {event.price || "—"}
               </span>
             </div>
           </div>

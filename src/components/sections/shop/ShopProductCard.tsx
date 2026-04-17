@@ -24,6 +24,8 @@ export default function ShopProductCard({ product }: ShopProductCardProps) {
       name: product.name,
       price: product.price,
       image: product.image,
+      size: product.size[0] ?? "One size",
+      color: "Default",
       type: "shop",
     });
     setJustAdded(true);

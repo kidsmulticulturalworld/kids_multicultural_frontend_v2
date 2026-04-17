@@ -5,11 +5,11 @@ const navigations = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Shop", href: "/shop" },
-  { label: "Magazines", href: "/magazines" },
+  { label: "Magazines", href: "/magazine" },
 ];
 
 const activities = [
-  { label: "Model Registration", href: "/casting" },
+  { label: "Model Registration", href: "/classes/register" },
   { label: "Classes", href: "/classes" },
   { label: "Events", href: "/events" },
 ];
@@ -18,6 +18,7 @@ const others = [
   { label: "Login", href: "/login" },
   { label: "My Cart", href: "/cart" },
   { label: "Terms Of Use", href: "/terms" },
+  { label: "Privacy", href: "/privacy" },
 ];
 
 const socials = [

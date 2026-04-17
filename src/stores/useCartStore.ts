@@ -1,12 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface CartItem {
+export interface CartItem {
   id: number;
   name: string;
   price: number;
   quantity: number;
   image?: string;
+  /** Shown in backend receipt line (`size` / `sizeSelected`). */
+  size?: string;
+  color?: string;
   type: "shop" | "ticket" | "magazine";
 }
 

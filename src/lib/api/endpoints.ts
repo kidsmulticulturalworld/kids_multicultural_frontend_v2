@@ -6,7 +6,9 @@
  * Based on the backend Django REST API structure from kids_python_anywhere.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+import { getApiBaseUrl } from "./base-url";
+
+const API_BASE = getApiBaseUrl();
 
 export const API_ENDPOINTS = {
   // Authentication

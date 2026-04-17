@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { FiX } from "react-icons/fi";
+import DashboardLogoutButton from "@/components/dashboard/DashboardLogoutButton";
 
 const topNavItems = [
   { icon: "/dashboard/icons/dashboard-icon.svg", href: "/dashboard", label: "Dashboard" },
@@ -15,7 +16,6 @@ const topNavItems = [
 
 const bottomNavItems = [
   { icon: "/dashboard/icons/settings.svg", href: "/dashboard/settings", label: "Settings" },
-  { icon: "/dashboard/icons/logout.svg", href: "/logout", label: "Logout" },
 ];
 
 interface DashboardMobileDrawerProps {
@@ -136,6 +136,12 @@ export default function DashboardMobileDrawer({ isOpen, onClose }: DashboardMobi
               </Link>
             );
           })}
+          <div className="px-1">
+            <DashboardLogoutButton
+              variant="drawer-row"
+              onAfterLogout={onClose}
+            />
+          </div>
         </nav>
       </aside>
     </>

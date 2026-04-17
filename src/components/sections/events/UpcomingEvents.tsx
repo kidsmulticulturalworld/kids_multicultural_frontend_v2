@@ -1,19 +1,59 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { upcomingEvents } from "./eventsData";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { eventService } from "@/lib/api/services";
+import { mapEventViewRow, normalizeArrayResponse } from "@/lib/api/data-mappers";
 
 export default function UpcomingEvents() {
+  const { data: eventsRaw, isLoading, isError } = useQuery({
+    queryKey: ["event-view-upcoming"],
+    queryFn: () => eventService.getEvents(),
+  });
+
+  const upcomingEvents = useMemo(() => {
+    const rows = normalizeArrayResponse(eventsRaw, [
+      "events",
+      "event",
+      "results",
+      "data",
+    ]);
+    return rows.map((r) => mapEventViewRow(r as Record<string, unknown>));
+  }, [eventsRaw]);
+
+  if (isLoading) {
+    return (
+      <section className="bg-white py-10 md:py-14 lg:py-20">
+        <div className="relative max-w-[1280px] mx-auto px-5 md:px-6 lg:px-10">
+          <p className="text-sm text-gray-500">Loading events\u2026</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || upcomingEvents.length === 0) {
+    return (
+      <section className="bg-white py-10 md:py-14 lg:py-20">
+        <div className="relative max-w-[1280px] mx-auto px-5 md:px-6 lg:px-10">
+          <p className="text-sm text-gray-500">
+            No upcoming events to show right now.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-white py-10 md:py-14 lg:py-20">
       <div className="relative max-w-[1280px] mx-auto px-5 md:px-6 lg:px-10">
-        {/* ── Heading ── */}
         <div className="mb-8 md:mb-10">
           <h2 className="font-display text-2xl md:text-3xl lg:text-[40px]">
             Upcoming Events
           </h2>
         </div>
 
-        {/* Slingshot kid mascot — overlaps top-right card */}
         <Image
           src="/slingshot.svg"
           alt=""
@@ -23,7 +63,6 @@ export default function UpcomingEvents() {
           aria-hidden="true"
         />
 
-        {/* ── Event cards grid ── */}
         <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {upcomingEvents.map((event) => (
             <Link
@@ -31,7 +70,6 @@ export default function UpcomingEvents() {
               href={`/events/${event.id}`}
               className="bg-[#F5F5F5] rounded-xl overflow-hidden transition-shadow hover:shadow-md"
             >
-              {/* Event cover image */}
               <div className="p-3 pb-0">
                 <Image
                   src={event.image}
@@ -43,7 +81,6 @@ export default function UpcomingEvents() {
                 />
               </div>
 
-              {/* Card details */}
               <div className="p-4 pt-3">
                 <h3 className="text-base font-bold text-gray-900 mb-3">
                   {event.title}
@@ -51,7 +88,6 @@ export default function UpcomingEvents() {
 
                 <div className="flex items-end justify-between gap-3">
                   <div className="flex flex-col gap-1">
-                    {/* Date */}
                     <div className="flex items-center gap-1.5 text-gray-500 text-xs">
                       <svg
                         className="w-3.5 h-3.5 shrink-0"
@@ -68,7 +104,6 @@ export default function UpcomingEvents() {
                       {event.date}
                     </div>
 
-                    {/* Location */}
                     <div className="flex items-center gap-1.5 text-gray-500 text-xs">
                       <svg
                         className="w-3.5 h-3.5 shrink-0"
@@ -81,7 +116,6 @@ export default function UpcomingEvents() {
                     </div>
                   </div>
 
-                  {/* Price */}
                   <span className="text-blue-500 text-2xl font-bold shrink-0">
                     {event.price}
                   </span>

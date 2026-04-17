@@ -1,24 +1,91 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import { useCartStore } from "@/stores/useCartStore";
+import { orderService } from "@/lib/api/services";
+import {
+  cartToCheckoutItems,
+  expectedShopCheckoutTotalCents,
+} from "@/lib/shop-pricing";
 
 const inputClass =
   "w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3491E8] focus:border-transparent";
 
-const labelClass = "block text-sm text-gray-600 mb-1.5";
+const stripePk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
+
+function PayWithStripe({
+  clientSecret,
+  onPaid,
+}: {
+  clientSecret: string;
+  onPaid: () => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const handlePay = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+    setLoading(true);
+    setErr(null);
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: "if_required",
+    });
+    if (error) {
+      setErr(error.message ?? "Payment could not be completed.");
+      setLoading(false);
+      return;
+    }
+    if (paymentIntent?.status === "succeeded") {
+      try {
+        await orderService.trackCheckout(clientSecret);
+        onPaid();
+      } catch {
+        setErr(
+          "Payment succeeded but we could not finalize your order. Please contact support with your receipt."
+        );
+      }
+    } else {
+      setErr("Payment was not completed. Try again or use another card.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <form onSubmit={handlePay} className="space-y-4 mt-4">
+      <PaymentElement />
+      {err && (
+        <p className="text-sm text-red-600" role="alert">
+          {err}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={!stripe || loading}
+        className="w-full inline-flex items-center justify-center gap-2 bg-[#3491E8] hover:bg-[#2b7ed0] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-3.5 rounded-xl transition-colors cursor-pointer"
+      >
+        {loading ? "Processing…" : "Pay securely"}
+      </button>
+    </form>
+  );
+}
 
 export default function CheckoutContent() {
   const cartItems = useCartStore((s) => s.items);
-  const totalPrice = useCartStore((s) => s.totalPrice);
+  const clearCart = useCartStore((s) => s.clearCart);
   const router = useRouter();
-
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "bank">("card");
-  const [promoCode, setPromoCode] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const [customer, setCustomer] = useState({
     firstName: "",
@@ -32,15 +99,27 @@ export default function CheckoutContent() {
     addressLine2: "",
     city: "",
     stateProvince: "",
+    zip: "",
   });
 
-  const [payment, setPayment] = useState({
-    cardNumber: "",
-    expiryDate: "",
-    cvc: "",
-    nameOnCard: "",
-    country: "",
-  });
+  const [country, setCountry] = useState("US");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [prepareError, setPrepareError] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+  const stripePromise = useMemo(
+    () => (stripePk ? loadStripe(stripePk) : null),
+    []
+  );
+
+  const shopItems = cartItems.filter((i) => i.type === "shop");
+  const subtotal = shopItems.reduce(
+    (s, i) => s + i.price * i.quantity,
+    0
+  );
+  const shippingCost = 6;
+  const total = expectedShopCheckoutTotalCents(shopItems);
 
   const handleCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomer((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -50,35 +129,66 @@ export default function CheckoutContent() {
     setShipping((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPayment((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const subtotal = totalPrice();
-  const shippingCost = 1;
-  const taxes = 2;
-  const total = subtotal + shippingCost + taxes;
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const prepareIntent = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPrepareError(null);
+    if (shopItems.length === 0) {
+      setPrepareError("Your cart has no shop items to ship.");
+      return;
+    }
+    if (!stripePk || !stripePromise) {
+      setPrepareError(
+        "Payments are not configured. Add NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY to your environment."
+      );
+      return;
+    }
     setIsLoading(true);
     try {
-      // TODO: integrate with payment API
-      console.log("Placing order:", { customer, shipping, payment, paymentMethod, cartItems });
-      router.push("/create-account?from=shop");
+      const price = Math.round(total);
+      const payload = {
+        type: "shop",
+        price,
+        items: cartToCheckoutItems(shopItems),
+        email: customer.email,
+        phone: customer.phone,
+        address: shipping.addressLine1,
+        apartment: shipping.addressLine2,
+        city: shipping.city,
+        state: shipping.stateProvince,
+        zipcode: shipping.zip,
+        country,
+        name: `${customer.firstName} ${customer.lastName}`.trim(),
+      };
+      const data = await orderService.checkout(payload);
+      const secret = data?.clientSecret as string | undefined;
+      if (!secret) {
+        setPrepareError(
+          typeof data === "string"
+            ? data
+            : "Could not start checkout. Try again later."
+        );
+        return;
+      }
+      setClientSecret(secret);
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === "object" && "message" in err
+          ? String((err as Error).message)
+          : "Could not reach the server. Try again.";
+      setPrepareError(msg);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const afterPaid = () => {
+    clearCart();
+    router.push("/order-confirmation");
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-[1100px] flex flex-col lg:flex-row gap-4 md:gap-5 lg:gap-6 items-start"
-    >
-      {/* ══════ Left column — Form cards ══════ */}
+    <div className="w-full max-w-[1100px] flex flex-col lg:flex-row gap-4 md:gap-5 lg:gap-6 items-start">
       <div className="w-full space-y-4 md:space-y-5">
-        {/* ── Card 1: Customer Information ── */}
         <div className="bg-white rounded-2xl shadow-md p-5 sm:p-6 md:p-8">
           <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-5">
             Customer Information
@@ -123,7 +233,6 @@ export default function CheckoutContent() {
           </div>
         </div>
 
-        {/* ── Card 2: Shipping Address ── */}
         <div className="bg-white rounded-2xl shadow-md p-5 sm:p-6 md:p-8">
           <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-5">
             Shipping Address
@@ -143,7 +252,7 @@ export default function CheckoutContent() {
               name="addressLine2"
               value={shipping.addressLine2}
               onChange={handleShippingChange}
-              placeholder="Address Line 2*"
+              placeholder="Address Line 2"
               className={inputClass}
             />
             <input
@@ -160,137 +269,72 @@ export default function CheckoutContent() {
               name="stateProvince"
               value={shipping.stateProvince}
               onChange={handleShippingChange}
-              placeholder="State/Province*"
+              placeholder="State*"
+              required
+              className={inputClass}
+            />
+            <input
+              type="text"
+              name="zip"
+              value={shipping.zip}
+              onChange={handleShippingChange}
+              placeholder="ZIP code*"
+              required
+              autoComplete="postal-code"
+              className={inputClass}
+            />
+            <input
+              type="text"
+              name="country"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              placeholder="Country*"
               required
               className={inputClass}
             />
           </div>
         </div>
 
-        {/* ── Card 3: Payment Method ── */}
         <div className="bg-white rounded-2xl shadow-md p-5 sm:p-6 md:p-8">
           <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-1">
-            Payment Method
+            Payment
           </h2>
-          <p className="text-sm text-gray-500 mb-5">
-            Select your preferred payment method
+          <p className="text-sm text-gray-500 mb-4">
+            Card payments are processed securely by Stripe. We do not store
+            full card numbers on our servers.
           </p>
-
-          {/* Radio options */}
-          <div className="space-y-3 mb-5">
-            <label
-              className={`flex items-center gap-3 border rounded-xl px-4 py-3.5 cursor-pointer transition-colors ${
-                paymentMethod === "card"
-                  ? "border-[#3491E8]"
-                  : "border-gray-200"
-              }`}
-            >
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="card"
-                checked={paymentMethod === "card"}
-                onChange={() => setPaymentMethod("card")}
-                className="w-5 h-5 text-[#3491E8] accent-[#3491E8] cursor-pointer"
-              />
-              <svg
-                className="w-5 h-5 text-gray-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"
-                />
-              </svg>
-              <span className="text-sm font-medium text-gray-900">
-                Credit/Debit card
-              </span>
-            </label>
-
-            <label
-              className={`flex items-center gap-3 border rounded-xl px-4 py-3.5 cursor-pointer transition-colors ${
-                paymentMethod === "bank"
-                  ? "border-[#3491E8]"
-                  : "border-gray-200"
-              }`}
-            >
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="bank"
-                checked={paymentMethod === "bank"}
-                onChange={() => setPaymentMethod("bank")}
-                className="w-5 h-5 text-[#3491E8] accent-[#3491E8] cursor-pointer"
-              />
-              <span className="text-sm font-medium text-gray-900">
-                Bank Transfer
-              </span>
-            </label>
-          </div>
-
-          {/* Card fields */}
-          {paymentMethod === "card" && (
-            <div className="space-y-3 sm:space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                <input
-                  type="text"
-                  name="cardNumber"
-                  value={payment.cardNumber}
-                  onChange={handlePaymentChange}
-                  placeholder="Card number"
-                  required
-                  className={inputClass}
-                />
-                <input
-                  type="text"
-                  name="expiryDate"
-                  value={payment.expiryDate}
-                  onChange={handlePaymentChange}
-                  placeholder="Expiry date"
-                  required
-                  className={inputClass}
-                />
-                <input
-                  type="text"
-                  name="cvc"
-                  value={payment.cvc}
-                  onChange={handlePaymentChange}
-                  placeholder="CVC"
-                  required
-                  maxLength={4}
-                  className={inputClass}
-                />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <input
-                  type="text"
-                  name="nameOnCard"
-                  value={payment.nameOnCard}
-                  onChange={handlePaymentChange}
-                  placeholder="Name on card*"
-                  required
-                  className={inputClass}
-                />
-                <input
-                  type="text"
-                  name="country"
-                  value={payment.country}
-                  onChange={handlePaymentChange}
-                  placeholder="Country*"
-                  required
-                  className={inputClass}
-                />
-              </div>
-            </div>
+          {prepareError && (
+            <p className="text-sm text-red-600 mb-3" role="alert">
+              {prepareError}
+            </p>
           )}
+          {!clientSecret ? (
+            <form onSubmit={prepareIntent}>
+              <button
+                type="submit"
+                disabled={isLoading || shopItems.length === 0}
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#3491E8] hover:bg-[#2b7ed0] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-3.5 rounded-xl transition-colors cursor-pointer"
+              >
+                {isLoading ? "Preparing…" : "Continue to secure payment"}
+              </button>
+            </form>
+          ) : stripePromise ? (
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret,
+                appearance: { theme: "stripe" },
+              }}
+            >
+              <PayWithStripe
+                clientSecret={clientSecret}
+                onPaid={afterPaid}
+              />
+            </Elements>
+          ) : null}
         </div>
       </div>
 
-      {/* ══════ Right column — Order Summary ══════ */}
       <div
         className="w-full lg:w-[380px] bg-white rounded-2xl p-5 sm:p-6 shrink-0"
         style={{ boxShadow: "rgba(0, 0, 0, 0.2) 0px 60px 40px -7px" }}
@@ -298,144 +342,52 @@ export default function CheckoutContent() {
         <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-5">
           Order Summary
         </h2>
-
-        {/* Cart Items */}
         <h3 className="text-sm font-bold text-gray-900 mb-3">Cart Items</h3>
         <div className="space-y-2 mb-5">
-          {cartItems.map((item, index) => (
-            <div
-              key={item.id ?? `summary-${index}`}
-              className="flex items-center justify-between text-sm"
-            >
-              <span className="text-gray-700">
-                {item.name} x{item.quantity}
-              </span>
-              <span className="font-medium text-gray-900">
-                ${item.price * item.quantity}
-              </span>
-            </div>
-          ))}
+          {shopItems.length === 0 ? (
+            <p className="text-sm text-gray-500">
+              No shop items in cart.{" "}
+              <Link href="/shop" className="text-[#3491E8] hover:underline">
+                Browse the shop
+              </Link>
+            </p>
+          ) : (
+            shopItems.map((item, index) => (
+              <div
+                key={item.id ?? `summary-${index}`}
+                className="flex items-center justify-between text-sm"
+              >
+                <span className="text-gray-700">
+                  {item.name} ×{item.quantity}
+                </span>
+                <span className="font-medium text-gray-900">
+                  ${(item.price * item.quantity).toFixed(2)}
+                </span>
+              </div>
+            ))
+          )}
         </div>
-
-        {/* Pricing */}
         <div className="space-y-2 mb-3">
           <div className="flex items-center justify-between text-sm">
             <span className="font-semibold text-gray-900">Subtotal</span>
-            <span className="font-medium text-gray-900">${subtotal}</span>
+            <span className="font-medium text-gray-900">
+              ${subtotal.toFixed(2)}
+            </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">Shipping</span>
-            <span className="font-medium text-gray-900">${shippingCost}</span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">Taxes</span>
-            <span className="font-medium text-gray-900">${taxes}</span>
+            <span className="text-gray-500">Shipping (flat)</span>
+            <span className="font-medium text-gray-900">
+              ${shippingCost.toFixed(2)}
+            </span>
           </div>
         </div>
-
         <div className="border-t border-gray-200 my-4" />
-
-        {/* Total */}
         <div className="flex items-center justify-between mb-5">
           <span className="text-base font-bold text-gray-900">Total:</span>
-          <span className="text-2xl font-bold text-[#3491E8]">${total}</span>
+          <span className="text-2xl font-bold text-[#3491E8]">
+            ${total.toFixed(2)}
+          </span>
         </div>
-
-        {/* Promo code */}
-        <div className="mb-5">
-          <p className="text-sm text-gray-500 mb-2">Promo code</p>
-          <div className="relative">
-            <input
-              type="text"
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value)}
-              placeholder="Enter promo code"
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 pr-16 focus:outline-none focus:ring-2 focus:ring-[#3491E8] focus:border-transparent"
-            />
-            <button
-              type="button"
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#3491E8] text-sm font-medium hover:underline cursor-pointer"
-            >
-              Apply
-            </button>
-          </div>
-        </div>
-
-        {/* Shipping Address display */}
-        {(shipping.addressLine1 || shipping.city) && (
-          <div className="mb-4">
-            <h3 className="text-sm font-bold text-gray-900 mb-1.5">
-              Shipping Address
-            </h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {[shipping.addressLine1, shipping.addressLine2]
-                .filter(Boolean)
-                .join(", ")}
-              {shipping.city && (
-                <>
-                  <br />
-                  {shipping.city}
-                  {shipping.stateProvince && `, ${shipping.stateProvince}`}
-                </>
-              )}
-              {payment.country && (
-                <>
-                  <br />
-                  {payment.country}
-                </>
-              )}
-            </p>
-          </div>
-        )}
-
-        {/* Contact Information display */}
-        {(customer.firstName || customer.email) && (
-          <div className="mb-4">
-            <h3 className="text-sm font-bold text-gray-900 mb-1.5">
-              Contact Information
-            </h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {[customer.firstName, customer.lastName]
-                .filter(Boolean)
-                .join(" ")}
-              {customer.email && (
-                <>
-                  <br />
-                  {customer.email}
-                </>
-              )}
-            </p>
-          </div>
-        )}
-
-        {/* Estimated Time of Arrival */}
-        <div className="mb-5">
-          <h3 className="text-sm font-bold text-gray-900 mb-1">
-            Estimated Time of Arrival
-          </h3>
-          <p className="text-sm text-gray-600">1 - 2 days</p>
-        </div>
-
-        {/* Place Order button */}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full inline-flex items-center justify-center gap-2 bg-[#3491E8] hover:bg-[#2b7ed0] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-3.5 rounded-xl transition-colors cursor-pointer mb-3"
-        >
-          {isLoading ? "Processing..." : "Place Order"}
-          {!isLoading && (
-            <Image
-              src="/dashboard/icons/arrow.svg"
-              alt=""
-              width={20}
-              height={20}
-              className="w-5 h-5"
-              aria-hidden="true"
-            />
-          )}
-        </button>
-
-        {/* Back to cart */}
         <Link
           href="/cart"
           className="w-full inline-flex items-center justify-center gap-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-900 text-sm font-medium py-3 rounded-xl transition-colors mb-4"
@@ -455,13 +407,11 @@ export default function CheckoutContent() {
           </svg>
           Back to cart
         </Link>
-
-        {/* Terms */}
         <p className="text-xs text-gray-400 leading-relaxed">
           By placing your order, you agree to our Terms of Service and Privacy
-          Policy
+          Policy.
         </p>
       </div>
-    </form>
+    </div>
   );
 }

@@ -7,23 +7,27 @@
 
 import apiClient from './client';
 import { API_ENDPOINTS } from './endpoints';
+import { persistAuthFromResponse } from '@/lib/auth/session';
+import { useAuthStore } from '@/stores/useAuthStore';
 import type {
-  LoginRequest,
   LoginResponse,
   RegisterRequest,
   ApiResponse,
 } from '@/types/api';
 
-// Helper to get token from localStorage
+/** Prefer Zustand (in-memory), then legacy localStorage `userInfo`. */
 const getToken = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  const userInfo = localStorage.getItem('userInfo');
-  if (userInfo) {
-    try {
-      const parsed = JSON.parse(userInfo);
-      return parsed.token || parsed.access || null;
-    } catch {
-      return null;
+  if (typeof window !== "undefined") {
+    const fromStore = useAuthStore.getState().token;
+    if (fromStore) return fromStore;
+    const userInfo = localStorage.getItem("userInfo");
+    if (userInfo) {
+      try {
+        const parsed = JSON.parse(userInfo);
+        return parsed.token || parsed.access || null;
+      } catch {
+        return null;
+      }
     }
   }
   return null;
@@ -46,9 +50,10 @@ export const authService = {
       API_ENDPOINTS.AUTH.LOGIN,
       { username: email, password }
     );
-    // Store user info in localStorage (matching old frontend behavior)
-    if (typeof window !== 'undefined' && response.data) {
-      localStorage.setItem('userInfo', JSON.stringify(response.data));
+    if (response.data && typeof response.data === 'object') {
+      persistAuthFromResponse(
+        response.data as unknown as Record<string, unknown>
+      );
     }
     return response.data;
   },
@@ -61,9 +66,10 @@ export const authService = {
       API_ENDPOINTS.AUTH.REGISTER,
       data
     );
-    // Store user info in localStorage (matching old frontend behavior)
-    if (typeof window !== 'undefined' && response.data) {
-      localStorage.setItem('userInfo', JSON.stringify(response.data));
+    if (response.data && typeof response.data === 'object') {
+      persistAuthFromResponse(
+        response.data as unknown as Record<string, unknown>
+      );
     }
     return response.data;
   },
@@ -77,7 +83,7 @@ export const authService = {
         headers: getAuthHeaders(),
       });
     } finally {
-      // Always clear localStorage
+      useAuthStore.getState().logout();
       if (typeof window !== 'undefined') {
         localStorage.removeItem('userInfo');
       }
@@ -311,6 +317,20 @@ export const orderService = {
       : { headers: { 'Content-Type': 'application/json' } };
     
     const response = await apiClient.post(API_ENDPOINTS.ORDERS.CHECKOUT, data, config);
+    return response.data;
+  },
+
+  /** After Stripe succeeds, finalize the sale (`type: "track"`, `secrete`: PaymentIntent client secret). */
+  trackCheckout: async (secrete: string): Promise<any> => {
+    const token = getToken();
+    const config = token
+      ? { headers: { Authorization: `Bearer ${token}` } }
+      : { headers: { 'Content-Type': 'application/json' } };
+    const response = await apiClient.post(
+      API_ENDPOINTS.ORDERS.CHECKOUT,
+      { type: 'track', secrete },
+      config
+    );
     return response.data;
   },
 

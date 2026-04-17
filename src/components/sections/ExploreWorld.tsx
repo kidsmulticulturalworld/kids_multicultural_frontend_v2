@@ -18,7 +18,7 @@ const tabContent = {
       "Flip through vibrant stories, interviews, and cultural insights crafted for curious young minds and their grown-ups. Explore, learn, and celebrate the world — one page at a time.",
     tags: ["Cultural stories", "Kid Spotlights"],
     buttonText: "View magazine",
-    buttonHref: "/magazines",
+    buttonHref: "/magazine",
     image: "/explore/magazines.svg",
     bgColor: "#FF6B4A",
     imageLayout: "bottom" as const,

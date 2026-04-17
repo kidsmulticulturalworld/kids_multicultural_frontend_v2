@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
 import ShopCategoryTabs from "./ShopCategoryTabs";
 import ShopFilters from "./ShopFilters";
 import ShopProductCard from "./ShopProductCard";
-import { products } from "./shopData";
+import { shopService } from "@/lib/api/services";
+import { parseShopListResponse } from "@/lib/api/data-mappers";
 import { useCartStore } from "@/stores/useCartStore";
 
 export default function ShopProducts() {
@@ -36,7 +38,16 @@ export default function ShopProducts() {
     setHydrated(true);
   }, []);
 
-  // Filter products based on active category
+  const { data: shopRaw, isLoading, isError } = useQuery({
+    queryKey: ["shop-view"],
+    queryFn: () => shopService.getShopItems(),
+  });
+
+  const products = useMemo(
+    () => parseShopListResponse(shopRaw),
+    [shopRaw]
+  );
+
   const filteredProducts =
     activeCategory === "All"
       ? products
@@ -103,9 +114,26 @@ export default function ShopProducts() {
 
           {/* Product grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {filteredProducts.map((product) => (
-              <ShopProductCard key={product.id} product={product} />
-            ))}
+            {isLoading && (
+              <p className="col-span-full text-sm text-gray-500">
+                Loading products\u2026
+              </p>
+            )}
+            {isError && !isLoading && (
+              <p className="col-span-full text-sm text-red-600">
+                Could not load products. Please try again later.
+              </p>
+            )}
+            {!isLoading &&
+              !isError &&
+              filteredProducts.map((product) => (
+                <ShopProductCard key={product.id} product={product} />
+              ))}
+            {!isLoading && !isError && filteredProducts.length === 0 && (
+              <p className="col-span-full text-sm text-gray-500">
+                No products match these filters.
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ export default function DashboardTopBar() {
             >
               <div className="w-full h-full rounded-full overflow-hidden">
                 <Image
-                  src="/dashboard/profile-image.jpg"
+                  src="/to-vote-for.jpg"
                   alt="User avatar"
                   width={36}
                   height={36}
@@ -129,7 +129,7 @@ export default function DashboardTopBar() {
             >
               <div className="w-full h-full rounded-full overflow-hidden">
                 <Image
-                  src="/dashboard/profile-image.jpg"
+                  src="/to-vote-for.jpg"
                   alt="User avatar"
                   width={36}
                   height={36}
