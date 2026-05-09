@@ -3,13 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  FiSearch,
-  FiUser,
-  FiMenu,
-  FiX,
-  FiChevronDown,
-} from "react-icons/fi";
+import { FiSearch, FiUser, FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import { HiShoppingCart } from "react-icons/hi";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/stores/useCartStore";
@@ -30,10 +24,19 @@ const eventsItems: DropdownItem[] = [
   { label: "Ongoing Contests", href: "/events?tab=ongoing" },
 ];
 
-const navLinks = [
+const navLinks: Array<{
+  label: string;
+  href: string;
+  dropdown?: DropdownItem[];
+  external?: boolean;
+}> = [
   { label: "About Us", href: "/about" },
   { label: "Classes", href: "/classes", dropdown: classesItems },
-  { label: "Magazines", href: "/magazine" },
+  {
+    label: "Magazines",
+    href: "https://www.magcloud.com/user/krystalokeke",
+    external: true,
+  },
   { label: "Discover Events", href: "/events", dropdown: eventsItems },
   { label: "Shop", href: "/shop" },
   { label: "Kids", href: "/kids" },
@@ -94,7 +97,10 @@ export default function Header() {
               </div>
 
               {/* Cart icon — filled, centered */}
-              <Link href="/cart" className="relative w-9 h-9 flex items-center justify-center bg-white/[0.08] hover:bg-white/15 rounded-lg transition-colors">
+              <Link
+                href="/cart"
+                className="relative w-9 h-9 flex items-center justify-center bg-white/[0.08] hover:bg-white/15 rounded-lg transition-colors"
+              >
                 <HiShoppingCart className="w-4 h-4 text-white/70" />
                 {hydrated && cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 flex items-center justify-center bg-[#3491E8] text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px]">
@@ -135,7 +141,7 @@ export default function Header() {
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenDropdown(
-                          openDropdown === link.label ? null : link.label
+                          openDropdown === link.label ? null : link.label,
                         );
                       }}
                       className="flex items-center gap-1 text-white/80 hover:text-white text-[13px] font-medium px-3 py-1.5 rounded-md hover:bg-white/[0.08] transition-colors"
@@ -144,10 +150,19 @@ export default function Header() {
                       <FiChevronDown
                         className={cn(
                           "w-3 h-3 transition-transform",
-                          openDropdown === link.label && "rotate-180"
+                          openDropdown === link.label && "rotate-180",
                         )}
                       />
                     </button>
+                  ) : link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/80 hover:text-white text-[13px] font-medium px-3 py-1.5 rounded-md hover:bg-white/[0.08] transition-colors block"
+                    >
+                      {link.label}
+                    </a>
                   ) : (
                     <Link
                       href={link.href}
@@ -171,7 +186,7 @@ export default function Header() {
                           className={cn(
                             "block px-3.5 py-2.5 text-white/80 hover:bg-white/[0.08] hover:text-white text-[13px] transition-colors",
                             index < link.dropdown!.length - 1 &&
-                              "border-b border-white/10"
+                              "border-b border-white/10",
                           )}
                         >
                           {item.label}
@@ -191,8 +206,11 @@ export default function Header() {
               >
                 Sign in
               </Link>
-              <Link href="/classes" className="bg-enroll hover:bg-enroll/90 text-white text-[13px] font-semibold px-4 py-1.5 rounded-lg transition-colors">
-                Enroll your kid
+              <Link
+                href="/classes"
+                className="bg-enroll hover:bg-enroll/90 text-white text-[13px] font-semibold px-4 py-1.5 rounded-lg transition-colors"
+              >
+                Join the Academy
               </Link>
             </div>
           </div>
@@ -215,10 +233,7 @@ export default function Header() {
           </button>
 
           {/* Logo centered */}
-          <Link
-            href="/"
-            className="absolute left-1/2 -translate-x-1/2"
-          >
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Image
               src="/Logo.svg"
               alt="Kids Multicultural World"
@@ -232,7 +247,10 @@ export default function Header() {
             <button className="w-9 h-9 flex items-center justify-center hover:bg-white/[0.08] rounded-md transition-colors">
               <FiSearch className="w-4 h-4 text-white/60" />
             </button>
-            <Link href="/cart" className="relative w-9 h-9 flex items-center justify-center bg-white/[0.08] rounded-md">
+            <Link
+              href="/cart"
+              className="relative w-9 h-9 flex items-center justify-center bg-white/[0.08] rounded-md"
+            >
               <HiShoppingCart className="w-4 h-4 text-white/70" />
               {hydrated && cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex items-center justify-center bg-[#3491E8] text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px]">
@@ -257,7 +275,7 @@ export default function Header() {
                       <button
                         onClick={() =>
                           setMobileDropdown(
-                            mobileDropdown === link.label ? null : link.label
+                            mobileDropdown === link.label ? null : link.label,
                           )
                         }
                         className="flex items-center justify-between w-full text-white/80 hover:text-white text-sm font-medium px-2.5 py-2.5 rounded-md hover:bg-white/[0.05] transition-colors"
@@ -266,7 +284,7 @@ export default function Header() {
                         <FiChevronDown
                           className={cn(
                             "w-3.5 h-3.5 transition-transform",
-                            mobileDropdown === link.label && "rotate-180"
+                            mobileDropdown === link.label && "rotate-180",
                           )}
                         />
                       </button>
@@ -285,6 +303,16 @@ export default function Header() {
                         </div>
                       )}
                     </>
+                  ) : link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-white/80 hover:text-white text-sm font-medium px-2.5 py-2.5 rounded-md hover:bg-white/[0.05] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {link.label}
+                    </a>
                   ) : (
                     <Link
                       href={link.href}
@@ -306,8 +334,11 @@ export default function Header() {
               >
                 Sign in
               </Link>
-              <Link href="/classes" className="w-full block text-center bg-enroll hover:bg-enroll/90 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
-                Enroll your kid
+              <Link
+                href="/classes"
+                className="w-full block text-center bg-enroll hover:bg-enroll/90 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+              >
+                Join the Academy
               </Link>
             </div>
           </div>

@@ -7,7 +7,7 @@ export default function AboutStory() {
         {/* ── Photo ── */}
         <div className="rounded-xl lg:rounded-2xl overflow-hidden border border-gray-200 shadow-sm mb-8 lg:mb-14">
           <Image
-            src="/about-us.svg"
+            src="/about-us-two.jpeg"
             alt="Kids Multicultural World group photo with CEO"
             width={1060}
             height={580}
@@ -19,9 +19,10 @@ export default function AboutStory() {
         {/* ── Mobile layout: single column ── */}
         <div className="lg:hidden">
           <p className="text-xl font-bold text-text-heading leading-relaxed">
-            The Kids Multicultural World is a cultural activism, Fashion,
-            Modeling and Acting Academy focused on Uniting a diverse Nation of
-            Kids ages 0 month - 17 years.
+            Kids Multicultural World Academy develops children ages 0–17 into
+            confident leaders and responsible global citizens through structured
+            talent development, cultural education, international fashion
+            festivals, media platforms, and mentorship. Join now.
           </p>
 
           <span className="relative z-20 inline-block mt-6 mb-8 bg-coral/10 text-coral font-semibold text-sm px-4 py-2 rounded-lg">
@@ -30,23 +31,24 @@ export default function AboutStory() {
 
           <div className="space-y-6">
             <p className="text-base text-text-body leading-relaxed">
-              We produce a bimonthly magazine, online Modeling &amp; acting
-              classes and host annual Kids Multicultural Fashion Shows &amp;
-              Festivals Worldwide.
+              Kids Multicultural World Academy is a global youth leadership and
+              talent-development academy coaching children to become confident
+              leaders and global citizens. We unite kids from diverse cultures
+              through education, creativity, and cultural activism, empowering
+              the next generation to lead with purpose, pride, and compassion.
             </p>
 
             <p className="text-base text-text-body leading-relaxed">
-              We educate Kids to take pride in cultural heritage, bring more
-              awareness to multiculturalism to end discrimination, bullying and
-              segregation- understanding the importance of self-growth, building
-              skills, and capitalizing on their individual talents.
+              Serving children ages 0–17, we offer leadership training, fashion,
+              modeling, acting, media education, mentorship, bi-weekly
+              magazines, and international fashion shows and festivals.
             </p>
 
             <p className="text-base text-text-body leading-relaxed">
-              This organization was founded on May 1st, 2017 by CEO Queen Amb.
-              Dr. Krystal Okeke&apos;Chanchangi. A global cultural activist and
-              voice for the next generation. The CEO is focused on eliminating
-              discrimination, bullying, and segregation.
+              Founded in 2017 by Queen Ambassador Dr. Krystal Chanchangi, Global
+              Cultural Activist and youth advocate, Kids Multicultural World has
+              empowered 38,000+ children worldwide, shaping future leaders,
+              creatives, and changemakers.
             </p>
           </div>
         </div>
@@ -56,9 +58,10 @@ export default function AboutStory() {
           {/* Left column — bold statement + mission badge */}
           <div className="lg:w-[34%] shrink-0">
             <p className="text-xl font-bold text-text-heading leading-relaxed">
-              The Kids Multicultural World is a cultural activism, Fashion,
-              Modeling and Acting Academy focused on Uniting a diverse Nation of
-              Kids ages 0 month - 17 years.
+              Kids Multicultural World Academy develops children ages 0–17 into
+              confident leaders and responsible global citizens through
+              structured talent development, cultural education, international
+              fashion festivals, media platforms, and mentorship. Join now.
             </p>
 
             <span className="relative z-20 inline-block mt-24 bg-coral/10 text-coral font-semibold text-sm px-4 py-2 rounded-lg">
@@ -69,23 +72,24 @@ export default function AboutStory() {
           {/* Right column — body paragraphs */}
           <div className="flex-1 space-y-6">
             <p className="text-base text-text-body leading-relaxed">
-              We produce a bimonthly magazine, online Modeling &amp; acting
-              classes and host annual Kids Multicultural Fashion Shows &amp;
-              Festivals Worldwide.
+              Kids Multicultural World Academy is a global youth leadership and
+              talent-development academy coaching children to become confident
+              leaders and global citizens. We unite kids from diverse cultures
+              through education, creativity, and cultural activism, empowering
+              the next generation to lead with purpose, pride, and compassion.
             </p>
 
             <p className="text-base text-text-body leading-relaxed">
-              We educate Kids to take pride in cultural heritage, bring more
-              awareness to multiculturalism to end discrimination, bullying and
-              segregation- understanding the importance of self-growth, building
-              skills, and capitalizing on their individual talents.
+              Serving children ages 0–17, we offer leadership training, fashion,
+              modeling, acting, media education, mentorship, bi-weekly
+              magazines, and international fashion shows and festivals.
             </p>
 
             <p className="text-base text-text-body leading-relaxed">
-              This organization was founded on May 1st, 2017 by CEO Queen Amb.
-              Dr. Krystal Okeke&apos;Chanchangi. A global cultural activist and
-              voice for the next generation. The CEO is focused on eliminating
-              discrimination, bullying, and segregation.
+              Founded in 2017 by Queen Ambassador Dr. Krystal Chanchangi, Global
+              Cultural Activist and youth advocate, Kids Multicultural World has
+              empowered 38,000+ children worldwide, shaping future leaders,
+              creatives, and changemakers.
             </p>
           </div>
         </div>

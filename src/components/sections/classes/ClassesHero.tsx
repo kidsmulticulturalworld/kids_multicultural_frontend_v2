@@ -51,8 +51,8 @@ export default function ClassesHero() {
 
         {/* Subtitle */}
         <p className="text-white/70 text-center text-xs md:text-sm lg:text-lg max-w-[320px] md:max-w-[500px] lg:max-w-[700px] leading-relaxed mb-8 md:mb-10 lg:mb-14">
-          Unlock your child&apos;s talent in modeling, acting, and life skills
-          with our fun, supportive programs. Watch their confidence soar!
+          Developing talent, confidence, leadership, and young entrepreneurs for
+          the next generation of global stars.
         </p>
 
         {/* Video frame with decorative strings */}
