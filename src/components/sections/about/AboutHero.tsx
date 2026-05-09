@@ -48,7 +48,7 @@ export default function AboutHero() {
           About Us
         </h1>
         <p className="text-white/70 text-center text-sm tracking-[0.1em] lg:text-xl lg:tracking-[0.15em]">
-          Learn more about what we do at KMW
+          Empowering the Next Generation of Global Leaders
         </p>
       </div>
 

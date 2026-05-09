@@ -24,9 +24,8 @@ export default function GetInvolved() {
 
         {/* Subtitle */}
         <p className="text-center text-text-muted text-sm lg:text-base leading-relaxed max-w-[640px] mx-auto mb-10 lg:mb-14">
-          Join hands with us as we empower children to embrace their roots,
-          celebrate diversity, and shine on a global stage. There are many ways
-          to be part of this journey.
+          Join a global movement empowering children to embrace their heritage,
+          celebrate diversity, and become confident leaders on the world stage.
         </p>
 
         {/* Cards grid — 1 col mobile, 2 col desktop */}
@@ -39,7 +38,7 @@ export default function GetInvolved() {
               {/* Image — edge-to-edge, fixed aspect ratio */}
               <div className="relative aspect-4/3">
                 <Image
-                  src="/involved/involved-first.jpg"
+                  src="/involved/involved-original.png"
                   alt="Child walking in a Kids Multicultural World pageant"
                   fill
                   className="object-cover"
@@ -51,10 +50,10 @@ export default function GetInvolved() {
               {/* White content area */}
               <div className="bg-white px-5 lg:px-7 pt-5 lg:pt-7 pb-6 lg:pb-8">
                 <h3 className="font-bold text-secondary text-[22px] lg:text-[28px] mb-1.5 lg:mb-2">
-                  Register Your Child
+                  Register Today
                 </h3>
                 <p className="text-text-muted text-sm lg:text-base mb-6 lg:mb-8">
-                  Now Enrolling for spring programs
+                  Join our global talent, and leadership programs.
                 </p>
                 <Link
                   href="/classes"

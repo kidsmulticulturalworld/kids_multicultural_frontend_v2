@@ -34,7 +34,7 @@ export default function ClassCard({ data }: ClassCardProps) {
           href="/classes/register"
           className="inline-flex items-center justify-center gap-2 bg-[#3491E8] text-white text-sm font-semibold px-5 py-3.5 rounded-lg hover:bg-[#2b7ed4] transition-colors w-full md:w-auto md:self-start"
         >
-          Enroll for this program
+          Enroll Now
           <Image
             src="/dashboard/icons/arrow.svg"
             alt=""
@@ -99,9 +99,7 @@ export default function ClassCard({ data }: ClassCardProps) {
         }`}
       >
         {/* Mobile/Tablet: always text first, image second. Desktop: respect reversed */}
-        <div className={`${data.reversed ? "lg:order-2" : ""}`}>
-          {textSide}
-        </div>
+        <div className={`${data.reversed ? "lg:order-2" : ""}`}>{textSide}</div>
         <div className={`${data.reversed ? "lg:order-1" : ""}`}>
           {imageSide}
         </div>

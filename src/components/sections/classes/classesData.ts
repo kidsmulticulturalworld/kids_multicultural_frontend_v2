@@ -18,9 +18,9 @@ export const classesData: ClassData[] = [
   {
     id: "modeling",
     title: "Modeling Class",
-    ageRange: "Age 1yr to 17 years",
+    ageRange: "Ages 1–17 Years",
     description:
-      "Modeling Ethics, Runway Modeling, Commercial Modeling and High Editorial, Pose and Confident building Class.\nTaught by two successful working models, this course is a must-have guide filled with useful tips and hints for all upcoming & professional models.",
+      "Runway training, posing, confidence building, stage presence, and fashion modeling in a fun and empowering multicultural environment.\nStudents learn professional modeling skills while building confidence and leadership to shine on the global stage.",
     price: 165,
     badgeLabel: "Modeling Class",
     badgeImage: "/modeling-class-frame.svg",
@@ -33,9 +33,9 @@ export const classesData: ClassData[] = [
   {
     id: "acting",
     title: "Acting Class",
-    ageRange: "Age 5yrs to 17 years",
+    ageRange: "Ages 5–17 Years",
     description:
-      "We teach beginners & upcoming actors- How to Prepare for an Audition, Read & deliver scripts and self presentation. Our Courses Are Designed for All Levels of Experience.",
+      "Students learn audition preparation, slating, script reading, self-presentation, and on-camera confidence in a fun and supportive environment.",
     price: 165,
     badgeLabel: "Acting Class",
     badgeImage: "/acting-class-pill-frame.svg",
@@ -47,11 +47,11 @@ export const classesData: ClassData[] = [
   },
   {
     id: "life-skills",
-    title: "Life Skills Class",
-    ageRange: "Age 1yr to 17 years",
+    title: "Life Skills & Kids Entrepreneurship ",
+    ageRange: "Ages 5–17 Years",
     description:
-      "Life skills mentorship: Twice a week guidance, 30mins prep talk and business ideas building, rebranding and rebuilding self esteem.",
-    price: 120,
+      "Mentorship focused on confidence building, positive mindset, leadership, business ideas, branding, and entrepreneurship. Students learn life skills that inspire creativity, self-esteem, and future success.",
+    price: 200,
     badgeLabel: "Life Skills Class",
     badgeImage: "/life-skill-pill-frame.svg",
     image: "/life-skill-actual-image.jpg",
