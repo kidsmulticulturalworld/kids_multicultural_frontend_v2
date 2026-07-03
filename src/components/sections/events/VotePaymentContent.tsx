@@ -43,12 +43,14 @@ function VoteStripeForm({
   clientSecret,
   checkout,
   voter,
+  formComplete,
   signatureRef,
   onPaid,
 }: {
   clientSecret: string;
   checkout: NonNullable<ReturnType<typeof useVoteCheckoutStore.getState>["checkout"]>;
   voter: VoterForm;
+  formComplete: boolean;
   signatureRef: React.RefObject<SignaturePadHandle | null>;
   onPaid: () => void;
 }) {
@@ -65,6 +67,10 @@ function VoteStripeForm({
     e.preventDefault();
     if (!stripe || !elements || !paymentReady) return;
 
+    if (!formComplete) {
+      setErr("Please complete all voter details above.");
+      return;
+    }
     if (!voter.termsAgreed) {
       setErr("Please accept the terms of service.");
       return;
@@ -186,9 +192,14 @@ function VoteStripeForm({
           {err}
         </p>
       )}
+      {!formComplete && (
+        <p className="text-sm text-gray-500">
+          Fill in all voter details, accept the terms, and sign above to pay.
+        </p>
+      )}
       <button
         type="submit"
-        disabled={!stripe || loading || !paymentReady}
+        disabled={!stripe || loading || !paymentReady || !formComplete}
         className="w-full inline-flex items-center justify-center gap-2 bg-[#3491E8] hover:bg-[#2b7ed0] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-3.5 rounded-xl transition-colors cursor-pointer"
       >
         {loading ? "Processing…" : "Pay now"}
@@ -297,15 +308,17 @@ export default function VotePaymentContent() {
     router.push("/events/vote-success");
   };
 
-  const voterFormComplete =
+  // Apt/Unit is optional — not everyone has one, and requiring it silently
+  // blocked the payment section (notably on mobile).
+  const voterFormComplete = Boolean(
     voter.full_name.trim() &&
-    voter.email.trim() &&
-    voter.address.trim() &&
-    voter.apartment.trim() &&
-    voter.city.trim() &&
-    voter.state.trim() &&
-    voter.zip.trim() &&
-    voter.termsAgreed;
+      voter.email.trim() &&
+      voter.address.trim() &&
+      voter.city.trim() &&
+      voter.state.trim() &&
+      voter.zip.trim() &&
+      voter.termsAgreed
+  );
 
   return (
     <div className="w-full max-w-[1100px] flex flex-col lg:flex-row gap-4 md:gap-5 lg:gap-6 items-start">
@@ -398,14 +411,13 @@ export default function VotePaymentContent() {
           </div>
           <div>
             <label className={labelClass} htmlFor="apartment">
-              Apt/Unit
+              Apt/Unit <span className="text-gray-400">(optional)</span>
             </label>
             <input
               id="apartment"
               name="apartment"
               value={voter.apartment}
               onChange={handleVoterChange}
-              required
               className={inputClass}
               placeholder="Apartment"
             />
@@ -488,7 +500,7 @@ export default function VotePaymentContent() {
           <p className="text-sm text-gray-500 mb-3">Preparing secure payment…</p>
         )}
 
-        {clientSecret && stripePromise && voterFormComplete ? (
+        {clientSecret && stripePromise ? (
           <Elements
             stripe={stripePromise}
             options={{
@@ -500,15 +512,18 @@ export default function VotePaymentContent() {
               clientSecret={clientSecret}
               checkout={checkout}
               voter={voter}
+              formComplete={voterFormComplete}
               signatureRef={signatureRef}
               onPaid={afterPaid}
             />
           </Elements>
         ) : (
-          <p className="text-sm text-gray-500">
-            Fill in all voter details and accept the terms to continue to
-            payment.
-          </p>
+          !loadingIntent &&
+          !prepareError && (
+            <p className="text-sm text-gray-500">
+              Preparing secure payment…
+            </p>
+          )
         )}
       </div>
     </div>

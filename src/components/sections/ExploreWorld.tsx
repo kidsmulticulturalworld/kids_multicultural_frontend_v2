@@ -39,7 +39,7 @@ const tabContent = {
     description:
       "Discover upcoming experiences that bring families together through music, storytelling, and celebration. Browse, save your favorites, and grab your spot.",
     tags: ["Cultural stories", "Kids spotlights"],
-    buttonText: "Discover events",
+    buttonText: "Contests",
     buttonHref: "/events",
     image: "/explore/events.svg",
     bgColor: "#91FFCB",
