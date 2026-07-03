@@ -43,14 +43,12 @@ function VoteStripeForm({
   clientSecret,
   checkout,
   voter,
-  formComplete,
   signatureRef,
   onPaid,
 }: {
   clientSecret: string;
   checkout: NonNullable<ReturnType<typeof useVoteCheckoutStore.getState>["checkout"]>;
   voter: VoterForm;
-  formComplete: boolean;
   signatureRef: React.RefObject<SignaturePadHandle | null>;
   onPaid: () => void;
 }) {
@@ -67,10 +65,6 @@ function VoteStripeForm({
     e.preventDefault();
     if (!stripe || !elements || !paymentReady) return;
 
-    if (!formComplete) {
-      setErr("Please complete all voter details above.");
-      return;
-    }
     if (!voter.termsAgreed) {
       setErr("Please accept the terms of service.");
       return;
@@ -192,14 +186,9 @@ function VoteStripeForm({
           {err}
         </p>
       )}
-      {!formComplete && (
-        <p className="text-sm text-gray-500">
-          Fill in all voter details, accept the terms, and sign above to pay.
-        </p>
-      )}
       <button
         type="submit"
-        disabled={!stripe || loading || !paymentReady || !formComplete}
+        disabled={!stripe || loading || !paymentReady}
         className="w-full inline-flex items-center justify-center gap-2 bg-[#3491E8] hover:bg-[#2b7ed0] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-3.5 rounded-xl transition-colors cursor-pointer"
       >
         {loading ? "Processing…" : "Pay now"}
@@ -500,7 +489,7 @@ export default function VotePaymentContent() {
           <p className="text-sm text-gray-500 mb-3">Preparing secure payment…</p>
         )}
 
-        {clientSecret && stripePromise ? (
+        {clientSecret && stripePromise && voterFormComplete ? (
           <Elements
             stripe={stripePromise}
             options={{
@@ -512,18 +501,15 @@ export default function VotePaymentContent() {
               clientSecret={clientSecret}
               checkout={checkout}
               voter={voter}
-              formComplete={voterFormComplete}
               signatureRef={signatureRef}
               onPaid={afterPaid}
             />
           </Elements>
         ) : (
-          !loadingIntent &&
-          !prepareError && (
-            <p className="text-sm text-gray-500">
-              Preparing secure payment…
-            </p>
-          )
+          <p className="text-sm text-gray-500">
+            Fill in all voter details and accept the terms to continue to
+            payment.
+          </p>
         )}
       </div>
     </div>
