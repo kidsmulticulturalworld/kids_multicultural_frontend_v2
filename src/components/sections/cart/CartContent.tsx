@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import Link from "next/link";
 import { useCartStore } from "@/stores/useCartStore";
 
@@ -62,7 +63,7 @@ export default function CartContent() {
                 {/* Product image placeholder */}
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
                   {item.image && (
-                    <Image
+                    <MediaImage
                       src={item.image}
                       alt={item.name}
                       width={64}

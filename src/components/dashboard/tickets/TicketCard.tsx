@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import { EventTicket } from "@/types/api";
 
 interface TicketCardProps {
@@ -18,7 +19,7 @@ export default function TicketCard({ ticket }: TicketCardProps) {
         <div className="hidden lg:flex gap-5">
           {/* Thumbnail */}
           <div className="w-[140px] h-[150px] rounded-xl overflow-hidden bg-gray-100 shrink-0">
-            <Image
+            <MediaImage
               src={ticket.imageUrl}
               alt={ticket.eventName}
               width={140}
@@ -120,7 +121,7 @@ export default function TicketCard({ ticket }: TicketCardProps) {
           <div className="relative mb-4">
             {/* Image with overflow hidden */}
             <div className="rounded-xl overflow-hidden">
-              <Image
+              <MediaImage
                 src={ticket.imageUrl}
                 alt={ticket.eventName}
                 width={400}

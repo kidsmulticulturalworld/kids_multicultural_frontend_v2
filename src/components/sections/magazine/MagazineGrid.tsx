@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import { useQuery } from "@tanstack/react-query";
 import { magazineService } from "@/lib/api/services";
 import { parseMagazineListResponse } from "@/lib/api/data-mappers";
@@ -42,7 +43,7 @@ export default function MagazineGrid() {
           {items.map((item, index) => (
             <div key={item.id} className="flex flex-col bg-gray-100 p-4 pb-5">
               <div className="overflow-hidden mb-4">
-                <Image
+                <MediaImage
                   src={item.coverImage}
                   alt={item.title}
                   width={300}

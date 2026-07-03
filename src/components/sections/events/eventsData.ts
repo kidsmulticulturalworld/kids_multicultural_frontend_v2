@@ -319,6 +319,7 @@ export interface ContestDetail {
   disclaimer: string;
   votesOrg: string;
   deadline: string;
+  pricePerVote: number;
 }
 
 export interface Contestant {
@@ -326,6 +327,7 @@ export interface Contestant {
   name: string;
   image: string;
   totalVotes: number;
+  votePrice: number;
 }
 
 export const contestDetails: Record<string, ContestDetail> = {
@@ -347,6 +349,7 @@ export const contestDetails: Record<string, ContestDetail> = {
       "No Refunds, no portion of any vote fees or payments of any kind whatsoever previously provided to Kids Multicultural World shall be owed or be repayable to Purchaser or Voters.",
     votesOrg: "AMERICA NATION MULTICULTURAL WORLD FOUNDATION ORG.",
     deadline: "2025-08-22T23:59:59",
+    pricePerVote: 1,
   },
   "contest-2": {
     id: "contest-2",
@@ -366,6 +369,7 @@ export const contestDetails: Record<string, ContestDetail> = {
       "No Refunds, no portion of any vote fees or payments of any kind whatsoever previously provided to Kids Multicultural World shall be owed or be repayable to Purchaser or Voters.",
     votesOrg: "AMERICA NATION MULTICULTURAL WORLD FOUNDATION ORG.",
     deadline: "2025-08-22T23:59:59",
+    pricePerVote: 1,
   },
   "contest-3": {
     id: "contest-3",
@@ -385,6 +389,7 @@ export const contestDetails: Record<string, ContestDetail> = {
       "No Refunds, no portion of any vote fees or payments of any kind whatsoever previously provided to Kids Multicultural World shall be owed or be repayable to Purchaser or Voters.",
     votesOrg: "AMERICA NATION MULTICULTURAL WORLD FOUNDATION ORG.",
     deadline: "2025-08-22T23:59:59",
+    pricePerVote: 1,
   },
 };
 
@@ -392,6 +397,7 @@ const mockContestant: Omit<Contestant, "id"> = {
   name: "Mivaan Rana",
   image: "/to-vote-for.jpg",
   totalVotes: 25,
+  votePrice: 1,
 };
 
 export const contestants: Contestant[] = Array.from({ length: 16 }, (_, i) => ({

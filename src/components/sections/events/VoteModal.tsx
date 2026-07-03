@@ -2,27 +2,42 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useVoteCheckoutStore } from "@/stores/useVoteCheckoutStore";
+import type { Contestant } from "./eventsData";
 
 interface VoteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  contestantName: string;
-  totalVotes: number;
+  contestant: Contestant | null;
+  pricePerVote?: number;
 }
 
 export default function VoteModal({
   isOpen,
   onClose,
-  contestantName,
-  totalVotes,
+  contestant,
+  pricePerVote = 1,
 }: VoteModalProps) {
   const router = useRouter();
+  const setCheckout = useVoteCheckoutStore((s) => s.setCheckout);
   const [voteCount, setVoteCount] = useState(5);
-  const pricePerVote = 1;
+  const pricePerVoteAmount = pricePerVote;
 
-  if (!isOpen) return null;
+  if (!isOpen || !contestant) return null;
 
-  const total = voteCount * pricePerVote;
+  const total = voteCount * pricePerVoteAmount;
+
+  const handleSendVote = () => {
+    setCheckout({
+      value: voteCount,
+      id_: contestant.id,
+      contestant_name: contestant.name,
+      total_price: total,
+      price_per_vote: pricePerVoteAmount,
+    });
+    onClose();
+    router.push("/events/vote-payment");
+  };
 
   return (
     <>
@@ -38,7 +53,7 @@ export default function VoteModal({
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
             <h2 className="text-xl md:text-2xl font-bold text-black">
-              Vote for {contestantName}
+              Vote for {contestant.name}
             </h2>
             <button
               onClick={onClose}
@@ -71,7 +86,7 @@ export default function VoteModal({
               Contestant&apos;s Total Votes:
             </span>
             <span className="text-2xl md:text-3xl font-bold text-black">
-              {totalVotes}
+              {contestant.totalVotes}
             </span>
           </div>
 
@@ -130,7 +145,7 @@ export default function VoteModal({
             <p className="text-sm text-[#1E1E1E]/70 leading-relaxed">
               Each vote costs just{" "}
               <span className="text-[#4CAF50] font-medium">
-                ${pricePerVote}
+                ${pricePerVoteAmount}
               </span>
               , and you can vote as many times as possible for your candidate
             </p>
@@ -148,10 +163,7 @@ export default function VoteModal({
 
           {/* Send Vote button */}
           <button
-            onClick={() => {
-              onClose();
-              router.push("/events/vote-payment");
-            }}
+            onClick={handleSendVote}
             className="w-full text-center text-white font-semibold text-base md:text-lg py-4 rounded-xl hover:opacity-90 transition-opacity cursor-pointer mb-5"
             style={{ background: "#3491E8" }}
           >

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import { ShopOrder, ShopOrderStatus } from "@/types/api";
 
 interface OrderCardProps {
@@ -26,7 +27,7 @@ export default function OrderCard({ order }: OrderCardProps) {
       <div className="hidden lg:flex gap-5">
         {/* Thumbnail */}
         <div className="w-[140px] h-[130px] rounded-xl overflow-hidden bg-gray-100 shrink-0">
-          <Image
+          <MediaImage
             src={order.imageUrl}
             alt={`Order #${order.orderNumber}`}
             width={140}
@@ -90,7 +91,7 @@ export default function OrderCard({ order }: OrderCardProps) {
       <div className="lg:hidden">
         {/* Product image */}
         <div className="rounded-xl overflow-hidden mb-4">
-          <Image
+          <MediaImage
             src={order.imageUrl}
             alt={`Order #${order.orderNumber}`}
             width={400}

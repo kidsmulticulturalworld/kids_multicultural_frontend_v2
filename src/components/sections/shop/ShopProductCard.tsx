@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import type { Product } from "./shopData";
 import { useCartStore } from "@/stores/useCartStore";
 
@@ -36,7 +37,7 @@ export default function ShopProductCard({ product }: ShopProductCardProps) {
     <div className="group bg-white rounded-xl overflow-hidden">
       {/* Product image */}
       <div className="p-4 pb-0">
-        <Image
+        <MediaImage
           src={product.image}
           alt={product.name}
           width={400}

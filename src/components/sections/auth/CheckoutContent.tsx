@@ -20,7 +20,12 @@ import {
 const inputClass =
   "w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3491E8] focus:border-transparent";
 
-const stripePk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
+import {
+  logPaymentError,
+  paymentFailedMessage,
+  paymentsUnavailableMessage,
+  stripePublishableKey,
+} from "@/lib/stripe-client";
 
 function PayWithStripe({
   clientSecret,
@@ -33,39 +38,77 @@ function PayWithStripe({
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [paymentReady, setPaymentReady] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!stripe || !elements) return;
+    if (!stripe || !elements || !paymentReady) return;
     setLoading(true);
     setErr(null);
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      redirect: "if_required",
-    });
-    if (error) {
-      setErr(error.message ?? "Payment could not be completed.");
+
+    let paymentIntent;
+    try {
+      const result = await stripe.confirmPayment({
+        elements,
+        redirect: "if_required",
+      });
+      if (result.error) {
+        logPaymentError("confirmPayment returned error", result.error);
+        const showable =
+          result.error.type === "card_error" ||
+          result.error.type === "validation_error";
+        setErr(
+          showable && result.error.message
+            ? result.error.message
+            : paymentFailedMessage
+        );
+        setLoading(false);
+        return;
+      }
+      paymentIntent = result.paymentIntent;
+    } catch (payErr) {
+      logPaymentError("confirmPayment threw", payErr);
+      setErr(paymentFailedMessage);
       setLoading(false);
       return;
     }
-    if (paymentIntent?.status === "succeeded") {
-      try {
-        await orderService.trackCheckout(clientSecret);
-        onPaid();
-      } catch {
-        setErr(
-          "Payment succeeded but we could not finalize your order. Please contact support with your receipt."
-        );
-      }
-    } else {
+
+    if (paymentIntent?.status !== "succeeded") {
       setErr("Payment was not completed. Try again or use another card.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await orderService.trackCheckout(clientSecret);
+      onPaid();
+    } catch (trackErr) {
+      logPaymentError("trackCheckout failed", trackErr);
+      setErr(
+        "Payment succeeded but we could not finalize your order. Please contact support with your receipt."
+      );
     }
     setLoading(false);
   };
 
+  if (loadFailed) {
+    return (
+      <p className="text-sm text-red-600 mt-4" role="alert">
+        {paymentsUnavailableMessage}
+      </p>
+    );
+  }
+
   return (
     <form onSubmit={handlePay} className="space-y-4 mt-4">
-      <PaymentElement />
+      <PaymentElement
+        onReady={() => setPaymentReady(true)}
+        onLoadError={(event) => {
+          logPaymentError("PaymentElement load error", event?.error ?? event);
+          setLoadFailed(true);
+        }}
+      />
       {err && (
         <p className="text-sm text-red-600" role="alert">
           {err}
@@ -73,7 +116,7 @@ function PayWithStripe({
       )}
       <button
         type="submit"
-        disabled={!stripe || loading}
+        disabled={!stripe || loading || !paymentReady}
         className="w-full inline-flex items-center justify-center gap-2 bg-[#3491E8] hover:bg-[#2b7ed0] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold py-3.5 rounded-xl transition-colors cursor-pointer"
       >
         {loading ? "Processing…" : "Pay securely"}
@@ -109,7 +152,7 @@ export default function CheckoutContent() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   const stripePromise = useMemo(
-    () => (stripePk ? loadStripe(stripePk) : null),
+    () => (stripePublishableKey ? loadStripe(stripePublishableKey) : null),
     []
   );
 
@@ -136,10 +179,8 @@ export default function CheckoutContent() {
       setPrepareError("Your cart has no shop items to ship.");
       return;
     }
-    if (!stripePk || !stripePromise) {
-      setPrepareError(
-        "Payments are not configured. Add NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY to your environment."
-      );
+    if (!stripePublishableKey || !stripePromise) {
+      setPrepareError(paymentsUnavailableMessage);
       return;
     }
     setIsLoading(true);

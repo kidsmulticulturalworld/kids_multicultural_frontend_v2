@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -71,7 +72,7 @@ export default function UpcomingEvents() {
               className="bg-[#F5F5F5] rounded-xl overflow-hidden transition-shadow hover:shadow-md"
             >
               <div className="p-3 pb-0">
-                <Image
+                <MediaImage
                   src={event.image}
                   alt={event.title}
                   width={400}

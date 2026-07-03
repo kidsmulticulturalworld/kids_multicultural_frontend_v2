@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { eventService, contestService } from "@/lib/api/services";
@@ -191,7 +192,7 @@ function UpcomingContent({
           href={`/events/${featuredEvent.id}`}
           className="block relative z-10 rounded-2xl overflow-hidden aspect-[5/4] sm:aspect-[4/3] md:aspect-[16/9] lg:aspect-[16/8] transition-shadow hover:shadow-lg"
         >
-          <Image
+          <MediaImage
             src={featuredEvent.image}
             alt={featuredEvent.title}
             fill
@@ -331,7 +332,7 @@ function EventCardGrid({
           className="bg-[#F5F5F5] rounded-xl overflow-hidden transition-shadow hover:shadow-md"
         >
           <div className="p-3 pb-0">
-            <Image
+            <MediaImage
               src={event.image}
               alt={event.title}
               width={400}

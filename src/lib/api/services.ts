@@ -321,14 +321,21 @@ export const orderService = {
   },
 
   /** After Stripe succeeds, finalize the sale (`type: "track"`, `secrete`: PaymentIntent client secret). */
-  trackCheckout: async (secrete: string): Promise<any> => {
+  trackCheckout: async (
+    secrete: string,
+    extras?: {
+      receipt?: Record<string, unknown>;
+      transaction_id?: string;
+      created?: number;
+    }
+  ): Promise<any> => {
     const token = getToken();
     const config = token
       ? { headers: { Authorization: `Bearer ${token}` } }
       : { headers: { 'Content-Type': 'application/json' } };
     const response = await apiClient.post(
       API_ENDPOINTS.ORDERS.CHECKOUT,
-      { type: 'track', secrete },
+      { type: 'track', secrete, ...extras },
       config
     );
     return response.data;

@@ -2,13 +2,28 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useVoteCheckoutStore } from "@/stores/useVoteCheckoutStore";
 
 export default function VoteSuccessCard() {
   const router = useRouter();
+  const checkout = useVoteCheckoutStore((s) => s.checkout);
+  const clear = useVoteCheckoutStore((s) => s.clear);
+
+  const voteCount = checkout?.value ?? 0;
+  const contestantName = checkout?.contestant_name ?? "your candidate";
+
+  const handleContinue = () => {
+    clear();
+    router.push("/events?tab=ongoing");
+  };
+
+  const handleHome = () => {
+    clear();
+    router.push("/");
+  };
 
   return (
     <div className="w-full max-w-[520px] bg-white rounded-2xl shadow-md p-5 sm:p-6 md:p-10 text-center">
-      {/* ── Success icon with gradient border ── */}
       <div className="flex justify-center mb-6">
         <div className="relative w-[76px] h-[76px] sm:w-[88px] sm:h-[88px]">
           <svg
@@ -40,7 +55,6 @@ export default function VoteSuccessCard() {
               fill="white"
             />
           </svg>
-          {/* Green checkmark badge */}
           <div className="absolute inset-0 flex items-center justify-center">
             <svg
               width="44"
@@ -66,18 +80,17 @@ export default function VoteSuccessCard() {
         </div>
       </div>
 
-      {/* ── Heading ── */}
       <h1 className="font-display text-center text-xl sm:text-2xl md:text-[28px] text-gray-900 mb-2">
         Vote Sent Successfully
       </h1>
       <p className="text-center text-sm sm:text-base text-gray-500 mb-7 sm:mb-8 max-w-[380px] mx-auto">
-        You have successfully sent 5 votes to your candidate -{" "}
-        <span className="font-bold text-gray-900">Mivaan Rana</span>
+        Thank you for casting {voteCount} vote{voteCount === 1 ? "" : "s"} for{" "}
+        <span className="font-bold text-gray-900">{contestantName}</span>. Your
+        vote has been received.
       </p>
 
-      {/* ── Continue Voting button ── */}
       <button
-        onClick={() => router.push("/events?tab=ongoing")}
+        onClick={handleContinue}
         className="w-full inline-flex items-center justify-center gap-2 bg-[#3491E8] hover:bg-[#2b7ed0] text-white text-sm sm:text-base font-semibold py-3.5 rounded-xl transition-colors cursor-pointer mb-4"
       >
         Continue Voting
@@ -91,9 +104,8 @@ export default function VoteSuccessCard() {
         />
       </button>
 
-      {/* ── Go Back Home button ── */}
       <button
-        onClick={() => router.push("/")}
+        onClick={handleHome}
         className="w-full inline-flex items-center justify-center gap-2 border border-[#3491E8] text-[#3491E8] hover:bg-[#3491E8]/5 text-sm sm:text-base font-semibold py-3.5 rounded-xl transition-colors cursor-pointer"
       >
         Go Back Home

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import Link from "next/link";
 import type { ClassData } from "./classesData";
 
@@ -74,7 +75,7 @@ export default function ClassCard({ data }: ClassCardProps) {
       </div>
 
       {/* Image — fills the container, no border */}
-      <Image
+      <MediaImage
         src={data.image}
         alt={data.title}
         width={600}

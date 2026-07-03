@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { userService, shopService } from "@/lib/api/services";
@@ -149,7 +150,7 @@ export default function Dashboard() {
                     className="border border-gray-200 rounded-2xl p-4 lg:p-5 bg-white shadow-card"
                   >
                     <div className="rounded-xl overflow-hidden mb-5">
-                      <Image
+                      <MediaImage
                         src={classItem.image}
                         alt={classItem.title}
                         width={400}
@@ -236,7 +237,7 @@ export default function Dashboard() {
                     className="border border-gray-200 rounded-2xl p-4 bg-white shadow-card"
                   >
                     <div className="rounded-xl overflow-hidden mb-4">
-                      <Image
+                      <MediaImage
                         src={mag.image}
                         alt={mag.title}
                         width={400}
@@ -277,7 +278,7 @@ export default function Dashboard() {
                     className="border border-gray-200 rounded-2xl p-4 bg-white shadow-card"
                   >
                     <div className="rounded-xl overflow-hidden mb-4">
-                      <Image
+                      <MediaImage
                         src={event.image}
                         alt={event.title}
                         width={400}
@@ -343,7 +344,7 @@ export default function Dashboard() {
                     className="border border-gray-200 rounded-2xl p-4 bg-white shadow-card"
                   >
                     <div className="rounded-xl overflow-hidden mb-4">
-                      <Image
+                      <MediaImage
                         src={item.image}
                         alt={item.name}
                         width={400}

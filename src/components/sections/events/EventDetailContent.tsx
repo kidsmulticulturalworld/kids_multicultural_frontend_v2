@@ -1,4 +1,5 @@
 import Image from "next/image";
+import MediaImage from "@/components/ui/MediaImage";
 import type { EventDetail } from "./eventsData";
 import GetTicketButton from "./GetTicketButton";
 
@@ -19,7 +20,7 @@ export default function EventDetailContent({ event }: { event: EventDetail }) {
     <section className="bg-white py-6 md:py-12 lg:py-16">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-10">
         <div className="relative w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[16/8] rounded-xl md:rounded-2xl overflow-hidden mb-0 md:mb-10">
-          <Image
+          <MediaImage
             src={event.image}
             alt={event.title}
             fill

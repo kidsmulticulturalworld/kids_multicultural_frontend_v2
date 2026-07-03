@@ -59,10 +59,15 @@ export type DashboardEvent = {
 
 export function mapDashboardEvent(e: Record<string, unknown>): DashboardEvent {
   const loc = [e.brief_location1, e.brief_location2].filter(Boolean).join(", ");
+  const start = fmtDate(e.start_date ?? e.event_date ?? e.date);
+  const end = fmtDate(e.end_date);
+  const date =
+    String(e.date_in_words ?? "") ||
+    (start && end ? `${start} – ${end}` : start || end || "");
   return {
     id: Number(e.id),
-    title: String(e.name ?? "Event"),
-    date: String(e.date_in_words ?? fmtDate(e.event_date)),
+    title: String(e.name_of_event ?? e.name ?? "Event"),
+    date,
     location: loc || String(e.location ?? ""),
     price: Number(e.price ?? 0),
     image: mediaUrl(e.cover_image as string) || PLACEHOLDER_EVENT,
@@ -262,15 +267,21 @@ export function mapKidsDetailToKid(
 
 export function mapEventViewRow(row: Record<string, unknown>) {
   const id = String(row.id ?? "");
+  const start = fmtDate(row.start_date ?? row.event_date ?? row.date);
+  const end = fmtDate(row.end_date);
+  const date =
+    String(row.date_in_words ?? "") ||
+    (start && end ? `${start} – ${end}` : start || end || "");
+  const priceNum = Number(row.price ?? 0);
   return {
     id,
-    title: String(row.name ?? "Event"),
+    title: String(row.name_of_event ?? row.name ?? "Event"),
     image: mediaUrl(row.cover_image as string) || PLACEHOLDER_EVENT,
-    date: String(row.date_in_words ?? fmtDate(row.event_date)),
+    date,
     location:
       [row.brief_location1, row.brief_location2].filter(Boolean).join(", ") ||
       String(row.location ?? ""),
-    price: `$${row.price ?? 0}`,
+    price: priceNum ? `$${priceNum}` : "",
     badge: "Join us",
   };
 }
@@ -356,14 +367,17 @@ export function mapEventDetailFromApi(raw: Record<string, unknown>): EventDetail
           },
         ];
 
+  const start = fmtDate(raw.start_date ?? raw.event_date ?? raw.date);
+  const end = fmtDate(raw.end_date);
   const fullDate = String(
-    raw.date_in_words ?? fmtDate(raw.event_date ?? raw.date)
+    raw.date_in_words ??
+      (start && end ? `${start} – ${end}` : start || end || "")
   );
   const timeStr = String(raw.startTime ?? raw.time ?? "");
 
   return {
     id,
-    title: String(raw.name ?? "Event"),
+    title: String(raw.name_of_event ?? raw.name ?? "Event"),
     image: mediaUrl(raw.cover_image as string) || PLACEHOLDER_EVENT,
     date: fullDate,
     fullDate,
@@ -374,6 +388,25 @@ export function mapEventDetailFromApi(raw: Record<string, unknown>): EventDetail
     highlights: defaultHighlights(desc),
     tickets,
   };
+}
+
+function parsePrizeList(raw: unknown): string[] {
+  if (!raw) return [];
+  if (Array.isArray(raw)) {
+    return raw
+      .map((p) => {
+        if (typeof p === "string") return p.trim();
+        const o = p as Record<string, unknown>;
+        return String(o.text ?? o.title ?? o.name ?? p).trim();
+      })
+      .filter(Boolean);
+  }
+  const text = String(raw).trim();
+  if (!text) return [];
+  return text
+    .split(/\r?\n\s*,\s*,\s*|\r?\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
 }
 
 export function unwrapContestResponse(raw: unknown): {
@@ -413,34 +446,41 @@ export function mapContestDetailFromApi(
   const prizeRows = normalizeArrayResponse(raw, ["prizes", "prize", "rewards"]);
   const prizes =
     prizeRows.length > 0
-      ? prizeRows.map((p) => {
-          if (typeof p === "string") return p;
-          const o = p as Record<string, unknown>;
-          return String(o.text ?? o.title ?? o.name ?? p);
-        })
-      : ["Prize details announced on the contest page."];
+      ? parsePrizeList(prizeRows)
+      : parsePrizeList(raw.winner_price ?? raw.winner_prize);
+
+  const description = String(raw.description ?? "").trim();
+  const defaultDisclaimer =
+    "No Refunds, no portion of any vote fees or payments of any kind whatsoever previously provided to Kids Multicultural World shall be owed or be repayable to Purchaser or Voters.";
 
   return {
     id,
     title: String(raw.name_of_event ?? raw.name ?? "Contest"),
-    image: mediaUrl(raw.cover_image as string) || "/ongoing-contest-image.svg",
+    image:
+      mediaUrl(raw.banner_image as string) ||
+      mediaUrl(raw.cover_image as string) ||
+      "/ongoing-contest-image.svg",
     dateRange,
     location: String(raw.location ?? "—"),
     contestantCount: Number(
       raw.contestant_count ?? raw.contestants_count ?? 0
     ),
-    prizes,
+    prizes:
+      prizes.length > 0
+        ? prizes
+        : ["Prize details announced on the contest page."],
     disclaimer: String(
-      raw.disclaimer ??
-        raw.policy ??
-        "Vote purchases are subject to the contest terms."
+      raw.disclaimer ?? raw.policy ?? (description || defaultDisclaimer)
     ),
     votesOrg: String(
-      raw.votes_org ?? raw.organization ?? "Kids Multicultural World"
+      raw.votes_org ??
+        raw.organization ??
+        "AMERICA NATION MULTICULTURAL WORLD FOUNDATION ORG."
     ),
     deadline: raw.end_date
       ? new Date(String(raw.end_date)).toISOString()
       : new Date().toISOString(),
+    pricePerVote: Number(raw.price_per_vote ?? raw.vote_price ?? 1) || 1,
   };
 }
 
@@ -448,17 +488,21 @@ export function mapContestantRows(
   rows: Record<string, unknown>[]
 ): Contestant[] {
   return rows.map((row, i) => ({
-    id: String(row.id ?? i),
+    id: String(row.id_ ?? row.id ?? i),
     name:
       String(row.name || "").trim() ||
       String(row.display_name || "").trim() ||
       [row.first_name, row.last_name].filter(Boolean).join(" ").trim() ||
       "Contestant",
     image:
+      mediaUrl(row.cover_image as string) ||
       mediaUrl(row.profile_photo as string) ||
       mediaUrl(row.image as string) ||
       "/to-vote-for.jpg",
-    totalVotes: Number(row.total_votes ?? row.votes ?? 0),
+    totalVotes: Number(
+      row.number_of_votes ?? row.total_votes ?? row.votes ?? 0
+    ),
+    votePrice: Number(row.vote_price ?? row.price_per_vote ?? 1) || 1,
   }));
 }
 
