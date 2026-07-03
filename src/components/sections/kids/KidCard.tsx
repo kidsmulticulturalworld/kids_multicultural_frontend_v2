@@ -59,10 +59,12 @@ export default function KidCard({ name, age, image, id, onViewProfile }: KidCard
           />
         </svg>
 
-        {/* Age badge */}
-        <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-[#3491E8] text-white text-xs sm:text-sm font-bold px-3 sm:px-5 py-1 sm:py-1.5 rounded-full border-2 border-white shadow-sm">
-          AGE: {age}
-        </div>
+        {/* Age badge — only when age is known (the directory list omits age) */}
+        {age > 0 && (
+          <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-[#3491E8] text-white text-xs sm:text-sm font-bold px-3 sm:px-5 py-1 sm:py-1.5 rounded-full border-2 border-white shadow-sm">
+            AGE: {age}
+          </div>
+        )}
       </div>
 
       {/* Name */}

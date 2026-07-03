@@ -213,14 +213,21 @@ export type MagazineGridItem = {
   title: string;
   description: string;
   coverImage: string;
+  /** External read/purchase link for the issue (Magazine.link). */
+  link: string;
 };
 
 export function mapMagazineRow(row: Record<string, unknown>): MagazineGridItem {
+  const price = Number(row.price ?? 0);
   return {
     id: Number(row.id),
     title: String(row.name ?? "Magazine"),
-    description: `From $${Number(row.price ?? 0)} — explore stories and tips inside.`,
+    description:
+      price > 0
+        ? `From $${price} — explore stories and tips inside.`
+        : "Tap to read this issue.",
     coverImage: mediaUrl(row.cover_image as string) || PLACEHOLDER_MAG,
+    link: String(row.link ?? ""),
   };
 }
 
@@ -287,11 +294,14 @@ export function mapEventViewRow(row: Record<string, unknown>) {
 }
 
 export function mapContestListRow(row: Record<string, unknown>) {
+  const start = fmtDate(row.start_date);
+  const end = fmtDate(row.end_date);
+  const date = start && end ? `${start} – ${end}` : start || end || "";
   return {
     id: String(row.id ?? ""),
     title: String(row.name_of_event ?? "Contest"),
     image: mediaUrl(row.cover_image as string) || "/ongoing-contest-image.svg",
-    date: fmtDate(row.start_date),
+    date,
     location: String(row.location ?? ""),
     price: "",
   };
@@ -344,7 +354,12 @@ export function mapEventDetailFromApi(raw: Record<string, unknown>): EventDetail
     [raw.brief_location1, raw.brief_location2].filter(Boolean).join(", ") ||
     String(raw.location ?? "");
   const desc = String(
-    raw.description ?? raw.about ?? raw.details ?? ""
+    raw.full_description ??
+      raw.brief_description ??
+      raw.description ??
+      raw.about ??
+      raw.details ??
+      ""
   );
   const ticketRows = normalizeArrayResponse(raw, [
     "ticket_set",

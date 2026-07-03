@@ -174,10 +174,12 @@ export default function KidModal({ kid, onClose }: KidModalProps) {
               />
             </svg>
 
-            {/* Age badge */}
-            <div className="absolute bottom-4 right-2 sm:right-4 bg-[#3491E8] text-white text-xs sm:text-sm font-bold px-5 py-1.5 rounded-full border-2 border-white shadow-sm">
-              AGE: {displayKid.age}
-            </div>
+            {/* Age badge — only once the detail with a real age has loaded */}
+            {displayKid.age > 0 && (
+              <div className="absolute bottom-4 right-2 sm:right-4 bg-[#3491E8] text-white text-xs sm:text-sm font-bold px-5 py-1.5 rounded-full border-2 border-white shadow-sm">
+                AGE: {displayKid.age}
+              </div>
+            )}
           </div>
 
           {/* Name and ethnicity */}
