@@ -70,7 +70,7 @@ export default function ContestDetailPage() {
         </div>
 
         <ContestInfo contest={contest} />
-        <ContestantsGrid contestants={contestants} />
+        <ContestantsGrid contestants={contestants} contestId={contestId} />
       </div>
     </section>
   );

@@ -13,6 +13,7 @@ import {
 import { castingService, orderService } from "@/lib/api/services";
 import { dataURLtoFile } from "@/lib/dataURLtoFile";
 import { useVoteCheckoutStore } from "@/stores/useVoteCheckoutStore";
+import { useVoteCheckoutHydrated } from "@/hooks/useVoteCheckoutHydrated";
 import SignaturePad, { type SignaturePadHandle } from "@/components/ui/SignaturePad";
 
 const inputClass =
@@ -198,6 +199,7 @@ function VoteStripeForm({
 
 export default function VotePaymentContent() {
   const router = useRouter();
+  const hydrated = useVoteCheckoutHydrated();
   const checkout = useVoteCheckoutStore((s) => s.checkout);
   const signatureRef = useRef<SignaturePadHandle>(null);
 
@@ -223,13 +225,14 @@ export default function VotePaymentContent() {
   );
 
   useEffect(() => {
+    if (!hydrated) return;
     if (!checkout) {
       router.replace("/events?tab=ongoing");
     }
-  }, [checkout, router]);
+  }, [hydrated, checkout, router]);
 
   useEffect(() => {
-    if (!checkout || intentRequested.current) return;
+    if (!hydrated || !checkout || intentRequested.current) return;
     if (!stripePublishableKey) {
       setPrepareError(paymentsUnavailableMessage);
       return;
@@ -264,7 +267,15 @@ export default function VotePaymentContent() {
         setLoadingIntent(false);
       }
     })();
-  }, [checkout]);
+  }, [hydrated, checkout]);
+
+  if (!hydrated) {
+    return (
+      <p className="text-sm text-gray-500 text-center py-10">
+        Loading your vote…
+      </p>
+    );
+  }
 
   if (!checkout) {
     return (

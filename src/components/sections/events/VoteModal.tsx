@@ -9,6 +9,7 @@ interface VoteModalProps {
   isOpen: boolean;
   onClose: () => void;
   contestant: Contestant | null;
+  contestId?: string;
   pricePerVote?: number;
 }
 
@@ -16,6 +17,7 @@ export default function VoteModal({
   isOpen,
   onClose,
   contestant,
+  contestId,
   pricePerVote = 1,
 }: VoteModalProps) {
   const router = useRouter();
@@ -34,6 +36,7 @@ export default function VoteModal({
       contestant_name: contestant.name,
       total_price: total,
       price_per_vote: pricePerVoteAmount,
+      contest_id: contestId,
     });
     onClose();
     router.push("/events/vote-payment");

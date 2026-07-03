@@ -7,8 +7,10 @@ import VoteModal from "./VoteModal";
 
 export default function ContestantsGrid({
   contestants,
+  contestId,
 }: {
   contestants: Contestant[];
+  contestId?: string;
 }) {
   const [selectedContestant, setSelectedContestant] = useState<Contestant | null>(null);
   const [previewContestant, setPreviewContestant] = useState<Contestant | null>(null);
@@ -161,6 +163,7 @@ export default function ContestantsGrid({
         isOpen={!!selectedContestant}
         onClose={() => setSelectedContestant(null)}
         contestant={selectedContestant}
+        contestId={contestId}
         pricePerVote={selectedContestant?.votePrice ?? 1}
       />
     </>

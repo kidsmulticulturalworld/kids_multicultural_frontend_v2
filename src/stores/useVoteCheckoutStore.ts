@@ -7,6 +7,7 @@ export type VoteCheckoutInfo = {
   contestant_name: string;
   total_price: number;
   price_per_vote: number;
+  contest_id?: string;
 };
 
 type VoteCheckoutState = {
