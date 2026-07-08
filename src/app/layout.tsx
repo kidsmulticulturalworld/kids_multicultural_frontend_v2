@@ -14,6 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://kidsmulticulturalworld.org",
+  ),
   title: {
     default: "Kids Multicultural World - Raising Global Stars",
     template: "%s | Kids Multicultural World",
@@ -29,7 +32,20 @@ export const metadata: Metadata = {
     "arts",
     "culture",
     "children programs",
+    "kids blog",
   ],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Kids Multicultural World",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

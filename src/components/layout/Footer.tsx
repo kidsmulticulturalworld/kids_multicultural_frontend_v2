@@ -6,6 +6,7 @@ const navigations = [
   { label: "About", href: "/about" },
   { label: "Shop", href: "/shop" },
   { label: "Magazines", href: "/magazine" },
+  { label: "Blog", href: "/blog" },
 ];
 
 const activities = [

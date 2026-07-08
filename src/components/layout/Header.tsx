@@ -37,6 +37,7 @@ const navLinks: Array<{
     href: "https://www.magcloud.com/user/krystalokeke",
     external: true,
   },
+  { label: "Blog", href: "/blog" },
   { label: "Contests", href: "/events", dropdown: eventsItems },
   { label: "Shop", href: "/shop" },
   { label: "Kids", href: "/kids" },
