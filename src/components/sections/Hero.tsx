@@ -93,9 +93,10 @@ export default function Hero() {
 
         {/* Subtitle — center on mobile, left-aligned on desktop */}
         <p className="text-white/70 text-center lg:text-left text-sm lg:text-base leading-relaxed max-w-[560px] mb-7 lg:mb-9">
-          KMW is an international youth academy celebrating diversity through
-          fashion, media, and the arts — helping kids grow in confidence,
-          culture, and creativity.
+          Kids Multicultural World Academy develops children ages 0–17 into
+          confident leaders and responsible global citizens through structured
+          talent development, cultural education, international fashion
+          festivals, media platforms, and mentorship.
         </p>
 
         {/* CTA Button — pill on mobile, rounded-rectangle on desktop */}

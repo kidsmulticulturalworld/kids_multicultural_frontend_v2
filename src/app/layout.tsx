@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s | Kids Multicultural World",
   },
   description:
-    "KMW is an international youth academy celebrating diversity through fashion, media, and the arts — helping kids grow in confidence, culture, and creativity.",
+    "Kids Multicultural World Academy develops children ages 0–17 into confident leaders and responsible global citizens through structured talent development, cultural education, international fashion festivals, media platforms, and mentorship.",
   keywords: [
     "kids",
     "multicultural",

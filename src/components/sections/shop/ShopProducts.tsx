@@ -3,32 +3,13 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
 import ShopCategoryTabs from "./ShopCategoryTabs";
-import ShopFilters from "./ShopFilters";
 import ShopProductCard from "./ShopProductCard";
-import { shopService } from "@/lib/api/services";
-import { parseShopListResponse } from "@/lib/api/data-mappers";
 import { useCartStore } from "@/stores/useCartStore";
+import type { Product } from "./shopData";
 
-export default function ShopProducts() {
+export default function ShopProducts({ products }: { products: Product[] }) {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [activeSizes, setActiveSizes] = useState<string[]>(["Baby"]);
-  const [activePrices, setActivePrices] = useState<string[]>(["Under $20"]);
-
-  const handleToggleSize = (size: string) => {
-    setActiveSizes((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
-    );
-  };
-
-  const handleTogglePrice = (price: string) => {
-    setActivePrices((prev) =>
-      prev.includes(price)
-        ? prev.filter((p) => p !== price)
-        : [...prev, price]
-    );
-  };
 
   const [hydrated, setHydrated] = useState(false);
   const cartItems = useCartStore((s) => s.items);
@@ -38,22 +19,10 @@ export default function ShopProducts() {
     setHydrated(true);
   }, []);
 
-  const { data: shopRaw, isLoading, isError } = useQuery({
-    queryKey: ["shop-view"],
-    queryFn: () => shopService.getShopItems(),
-  });
-
-  const products = useMemo(
-    () => parseShopListResponse(shopRaw),
-    [shopRaw]
-  );
-
-  const filteredProducts =
-    activeCategory === "All"
-      ? products
-      : products.filter(
-          (p) => p.category === activeCategory.toLowerCase()
-        );
+  const filteredProducts = useMemo(() => {
+    if (activeCategory === "All") return products;
+    return products.filter((p) => p.category === activeCategory.toLowerCase());
+  }, [products, activeCategory]);
 
   return (
     <section className="bg-white py-10 md:py-14 lg:py-20">
@@ -104,34 +73,16 @@ export default function ShopProducts() {
 
         {/* Filters + Product grid container */}
         <div className="bg-[#F5F5F5] border border-gray-200 rounded-2xl overflow-hidden px-5 md:px-6 lg:px-8 py-5 md:py-6 lg:py-8">
-          {/* Filters */}
-          <ShopFilters
-            activeSizes={activeSizes}
-            activePrices={activePrices}
-            onToggleSize={handleToggleSize}
-            onTogglePrice={handleTogglePrice}
-          />
-
           {/* Product grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {isLoading && (
+            {filteredProducts.map((product) => (
+              <ShopProductCard key={product.id} product={product} />
+            ))}
+            {filteredProducts.length === 0 && (
               <p className="col-span-full text-sm text-gray-500">
-                Loading products\u2026
-              </p>
-            )}
-            {isError && !isLoading && (
-              <p className="col-span-full text-sm text-red-600">
-                Could not load products. Please try again later.
-              </p>
-            )}
-            {!isLoading &&
-              !isError &&
-              filteredProducts.map((product) => (
-                <ShopProductCard key={product.id} product={product} />
-              ))}
-            {!isLoading && !isError && filteredProducts.length === 0 && (
-              <p className="col-span-full text-sm text-gray-500">
-                No products match these filters.
+                {products.length === 0
+                  ? "No products available right now. Please check back soon."
+                  : "No products in this category."}
               </p>
             )}
           </div>

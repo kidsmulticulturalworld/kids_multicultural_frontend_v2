@@ -19,7 +19,7 @@ const tabContent = {
     tags: ["Cultural stories", "Kid Spotlights"],
     buttonText: "View magazine",
     buttonHref: "/magazine",
-    image: "/explore/magazines.svg",
+    image: "/magazine-img.jpeg",
     bgColor: "#FF6B4A",
     imageLayout: "bottom" as const,
   },
@@ -67,14 +67,14 @@ export default function ExploreWorld() {
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Heading */}
         <h2 className="font-display text-center text-[28px] lg:text-[48px] leading-tight mb-4">
-          <span className="text-text-heading">Explore </span>
-          <span className="text-primary">Our World</span>
+          <span className="text-text-heading">Discover </span>
+          <span className="text-primary">Their Potential</span>
         </h2>
 
         {/* Subtitle */}
         <p className="text-center text-text-muted text-sm lg:text-base leading-relaxed max-w-[600px] mx-auto mb-10 lg:mb-14">
-          Step inside a universe of color, culture, and creativity. From
-          hands-on classes to global celebrations
+          Where young talents grow through culture, creativity, leadership,
+          fashion, media, education &amp; mentorship.
         </p>
 
         {/* Outer gray box */}

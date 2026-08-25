@@ -180,6 +180,8 @@ export function parseShopListResponse(raw: unknown): Product[] {
   const rows = normalizeArrayResponse(raw, [
     "shop",
     "products",
+    "items",
+    "shop_items",
     "results",
     "data",
   ]);
