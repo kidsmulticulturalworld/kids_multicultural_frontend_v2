@@ -48,7 +48,8 @@ export default function ShopHero() {
           Shop
         </h1>
         <p className="text-white/70 text-center text-sm tracking-[0.1em] lg:text-xl lg:tracking-[0.15em] max-w-2xl">
-          Stylish, comfy, and culture-loving apparel for kids and families.
+          Shop comfy apparel and official Kids Multicultural World T-shirts
+          designed to celebrate culture, diversity, and unity.
         </p>
       </div>
 

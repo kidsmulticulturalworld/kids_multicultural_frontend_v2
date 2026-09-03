@@ -123,12 +123,12 @@ export default function ShopBanner() {
                 aria-hidden="true"
               />
               <Image
-                src="/dashboard/shopping-image.svg"
-                alt="Kids Multicultural World T-shirt and hoodie"
+                src="/shop/tshirt-banner.jpeg"
+                alt="Kids Multicultural World official T-shirt"
                 width={520}
-                height={420}
-                className="w-[78%] max-w-[420px] lg:w-full lg:max-w-[480px] h-auto drop-shadow-sm"
-                sizes="(max-width: 1024px) 70vw, 480px"
+                height={520}
+                className="w-[70%] max-w-[340px] lg:w-full lg:max-w-[400px] h-auto drop-shadow-sm object-contain"
+                sizes="(max-width: 1024px) 60vw, 400px"
                 priority
               />
             </div>

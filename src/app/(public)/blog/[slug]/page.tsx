@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BlogJsonLd } from "@/components/blog/BlogJsonLd";
 import PortableTextRenderer from "@/components/blog/PortableTextRenderer";
+import { formatDate as formatDateAmerican } from "@/lib/format-date";
 import { getSiteUrl } from "@/sanity/env";
 import { sanityFetch } from "@/sanity/lib/client";
 import { getSanityImageUrl } from "@/sanity/lib/image";
@@ -16,10 +17,13 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-async function getPost(slug: string): Promise<BlogPost | null> {
+async function getPost(rawSlug: string): Promise<BlogPost | null> {
   if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
     return null;
   }
+
+  // Browsers URL-encode the path, so decode before querying Sanity
+  const slug = decodeURIComponent(rawSlug);
 
   try {
     return await sanityFetch<BlogPost | null>({
@@ -106,11 +110,7 @@ export async function generateMetadata({
 
 function formatDate(value?: string) {
   if (!value) return null;
-  return new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
+  return formatDateAmerican(value) || null;
 }
 
 export default async function BlogPostPage({ params }: PageProps) {

@@ -4,6 +4,37 @@ import { useEffect, useState } from "react";
 import MediaImage from "@/components/ui/MediaImage";
 import type { Contestant } from "./eventsData";
 import VoteModal from "./VoteModal";
+import { getInitials, hasProfilePhoto } from "@/lib/profile-photo";
+
+function ContestantAvatar({
+  name,
+  image,
+  className,
+}: {
+  name: string;
+  image: string;
+  className?: string;
+}) {
+  if (hasProfilePhoto(image)) {
+    return (
+      <MediaImage
+        src={image}
+        alt={name}
+        fill
+        className={className}
+        sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, (max-width: 1024px) 30vw, 280px"
+      />
+    );
+  }
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-[#1a2744]">
+      <span className="text-white/90 text-4xl md:text-5xl font-bold tracking-wide">
+        {getInitials(name)}
+      </span>
+    </div>
+  );
+}
 
 export default function ContestantsGrid({
   contestants,
@@ -40,16 +71,26 @@ export default function ContestantsGrid({
             {/* Contestant photo — click to preview full image */}
             <button
               type="button"
-              onClick={() => setPreviewContestant(contestant)}
-              className="relative aspect-square block w-full cursor-zoom-in group"
-              aria-label={`View full photo of ${contestant.name}`}
+              onClick={() =>
+                hasProfilePhoto(contestant.image)
+                  ? setPreviewContestant(contestant)
+                  : undefined
+              }
+              className={`relative aspect-square block w-full group ${
+                hasProfilePhoto(contestant.image)
+                  ? "cursor-zoom-in"
+                  : "cursor-default"
+              }`}
+              aria-label={
+                hasProfilePhoto(contestant.image)
+                  ? `View full photo of ${contestant.name}`
+                  : `Profile for ${contestant.name}`
+              }
             >
-              <MediaImage
-                src={contestant.image}
-                alt={contestant.name}
-                fill
+              <ContestantAvatar
+                name={contestant.name}
+                image={contestant.image}
                 className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, (max-width: 1024px) 30vw, 280px"
               />
             </button>
 
@@ -117,7 +158,7 @@ export default function ContestantsGrid({
       </div>
 
       {/* Image preview modal */}
-      {previewContestant && (
+      {previewContestant && hasProfilePhoto(previewContestant.image) && (
         <div
           className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 p-4 md:p-8"
           onClick={() => setPreviewContestant(null)}

@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Next 15+ treats localhost and 127.0.0.1 as different origins and blocks
+  // cross-origin RSC/HMR in dev unless listed here — otherwise the page hangs
+  // with no client network requests when you use the "other" host.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   devIndicators: false,
   reactCompiler: true,
   images: {

@@ -373,7 +373,7 @@ export default function EventGuestCheckoutContent() {
         <h3 className="text-sm font-bold text-gray-900 mb-1">
           Global Kids Festival: Around the World in a Day
         </h3>
-        <p className="text-sm text-gray-500 mb-1">Saturday, June 15, 2025</p>
+        <p className="text-sm text-gray-500 mb-1">June 15, 2025</p>
         <p className="text-sm text-gray-500 mb-4">
           Cultural Heritage Center, 123 Main Street
         </p>

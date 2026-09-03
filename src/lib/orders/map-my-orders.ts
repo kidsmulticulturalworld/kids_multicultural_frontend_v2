@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/format-date";
 import type { ShopOrder, ShopOrderStatus } from "@/types/api";
 
 /** Shape of each row from `Shop_salesSerializer` on `/api/my_orders`. */
@@ -24,13 +25,7 @@ export interface MyOrdersApiResponse {
  * until the backend adds a status field.
  */
 export function mapShopSaleToShopOrder(row: MyOrdersApiRow): ShopOrder {
-  const d = row.date ? new Date(row.date) : new Date();
-  const dateStr = d.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const dateStr = formatDate(row.date ?? new Date());
 
   const status: ShopOrderStatus = "processing";
 

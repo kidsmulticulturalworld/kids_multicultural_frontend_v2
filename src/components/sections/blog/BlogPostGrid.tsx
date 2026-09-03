@@ -1,15 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import { formatDate as formatDateAmerican } from "@/lib/format-date";
 import { getSanityImageUrl } from "@/sanity/lib/image";
 import type { BlogPostListItem } from "@/sanity/types";
 
 function formatDate(value?: string) {
   if (!value) return null;
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
+  return formatDateAmerican(value) || null;
 }
 
 export default function BlogPostGrid({ posts }: { posts: BlogPostListItem[] }) {
@@ -40,7 +37,7 @@ export default function BlogPostGrid({ posts }: { posts: BlogPostListItem[] }) {
             return (
               <Link
                 key={post._id}
-                href={`/blog/${post.slug}`}
+                href={`/blog/${encodeURIComponent(post.slug)}`}
                 className="group flex flex-col bg-gray-100 overflow-hidden transition-shadow hover:shadow-md"
               >
                 <div className="relative aspect-[16/10] bg-gray-200 overflow-hidden">

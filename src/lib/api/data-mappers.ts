@@ -1,4 +1,5 @@
 import { mediaUrl } from "@/lib/media";
+import { formatDate as fmtDate, formatDateRange } from "@/lib/format-date";
 import type { EventTicket } from "@/types/api";
 import type { Product } from "@/components/sections/shop/shopData";
 import type { Kid } from "@/components/sections/kids/kidsData";
@@ -15,22 +16,6 @@ const PLACEHOLDER_EVENT = "/dashboard/upcoming-events.svg";
 const PLACEHOLDER_SHOP = "/dashboard/shopping-image.svg";
 const PLACEHOLDER_MAG = "/dashboard/front-magazine.svg";
 const PLACEHOLDER_TICKET = "/dashboard/ticket-image.svg";
-
-function fmtDate(d: unknown): string {
-  if (!d) return "";
-  try {
-    const dt = new Date(String(d));
-    if (Number.isNaN(dt.getTime())) return String(d);
-    return dt.toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  } catch {
-    return String(d);
-  }
-}
 
 export type DashboardMagazine = {
   id: number;
@@ -59,11 +44,11 @@ export type DashboardEvent = {
 
 export function mapDashboardEvent(e: Record<string, unknown>): DashboardEvent {
   const loc = [e.brief_location1, e.brief_location2].filter(Boolean).join(", ");
-  const start = fmtDate(e.start_date ?? e.event_date ?? e.date);
-  const end = fmtDate(e.end_date);
-  const date =
-    String(e.date_in_words ?? "") ||
-    (start && end ? `${start} – ${end}` : start || end || "");
+  const formatted = formatDateRange(
+    e.start_date ?? e.event_date ?? e.date,
+    e.end_date
+  );
+  const date = formatted || String(e.date_in_words ?? "");
   return {
     id: Number(e.id),
     title: String(e.name_of_event ?? e.name ?? "Event"),
@@ -195,10 +180,10 @@ export function mapShopRowToProduct(row: Record<string, unknown>): Product {
     .split(",")
     .map((x) => x.trim())
     .filter(Boolean);
-  let category: Product["category"] = "hoodies";
-  if (row.is_shirt) category = "t-shirts";
-  if (row.is_bonnet) category = "bonnets";
+  let category = "other";
   if (row.is_hoodie) category = "hoodies";
+  if (row.is_bonnet) category = "bonnets";
+  if (row.is_shirt) category = "t-shirts";
 
   return {
     id: `product-${id}`,
@@ -238,7 +223,7 @@ export function mapProfileKid(row: Record<string, unknown>): Kid {
     id: String(row.id),
     name: String(row.name ?? "Member"),
     age: typeof row.age === "number" ? row.age : 0,
-    image: mediaUrl(row.profile_photo as string) || "/to-vote-for.jpg",
+    image: mediaUrl(row.profile_photo as string),
     ethnicity: String(row.ethnicity ?? "—"),
     gender: String(row.gender ?? "—"),
     height: String(row.height ?? "—"),
@@ -263,7 +248,7 @@ export function mapKidsDetailToKid(
     id: String(row.id ?? fallbackId),
     name: String(name),
     age: typeof row.age === "number" ? row.age : Number(row.age ?? 0) || 0,
-    image: mediaUrl(row.profile_photo as string) || "/to-vote-for.jpg",
+    image: mediaUrl(row.profile_photo as string),
     ethnicity: String(row.ethnicity ?? "—"),
     gender: String(row.gender ?? "—"),
     height: String(row.height ?? "—"),
@@ -276,11 +261,11 @@ export function mapKidsDetailToKid(
 
 export function mapEventViewRow(row: Record<string, unknown>) {
   const id = String(row.id ?? "");
-  const start = fmtDate(row.start_date ?? row.event_date ?? row.date);
-  const end = fmtDate(row.end_date);
-  const date =
-    String(row.date_in_words ?? "") ||
-    (start && end ? `${start} – ${end}` : start || end || "");
+  const formatted = formatDateRange(
+    row.start_date ?? row.event_date ?? row.date,
+    row.end_date
+  );
+  const date = formatted || String(row.date_in_words ?? "");
   const priceNum = Number(row.price ?? 0);
   return {
     id,
@@ -296,9 +281,7 @@ export function mapEventViewRow(row: Record<string, unknown>) {
 }
 
 export function mapContestListRow(row: Record<string, unknown>) {
-  const start = fmtDate(row.start_date);
-  const end = fmtDate(row.end_date);
-  const date = start && end ? `${start} – ${end}` : start || end || "";
+  const date = formatDateRange(row.start_date, row.end_date);
   return {
     id: String(row.id ?? ""),
     title: String(row.name_of_event ?? "Contest"),
@@ -384,12 +367,11 @@ export function mapEventDetailFromApi(raw: Record<string, unknown>): EventDetail
           },
         ];
 
-  const start = fmtDate(raw.start_date ?? raw.event_date ?? raw.date);
-  const end = fmtDate(raw.end_date);
-  const fullDate = String(
-    raw.date_in_words ??
-      (start && end ? `${start} – ${end}` : start || end || "")
+  const formatted = formatDateRange(
+    raw.start_date ?? raw.event_date ?? raw.date,
+    raw.end_date
   );
+  const fullDate = formatted || String(raw.date_in_words ?? "");
   const timeStr = String(raw.startTime ?? raw.time ?? "");
 
   return {
@@ -456,10 +438,7 @@ export function mapContestDetailFromApi(
   raw: Record<string, unknown>
 ): ContestDetail {
   const id = String(raw.id ?? "");
-  const start = fmtDate(raw.start_date);
-  const end = fmtDate(raw.end_date);
-  const dateRange =
-    start && end ? `${start} – ${end}` : start || end || "—";
+  const dateRange = formatDateRange(raw.start_date, raw.end_date) || "—";
   const prizeRows = normalizeArrayResponse(raw, ["prizes", "prize", "rewards"]);
   const prizes =
     prizeRows.length > 0
@@ -515,7 +494,7 @@ export function mapContestantRows(
       mediaUrl(row.cover_image as string) ||
       mediaUrl(row.profile_photo as string) ||
       mediaUrl(row.image as string) ||
-      "/to-vote-for.jpg",
+      "",
     totalVotes: Number(
       row.number_of_votes ?? row.total_votes ?? row.votes ?? 0
     ),
@@ -546,7 +525,7 @@ export function flattenEventTicketsResponse(raw: Record<string, unknown>): Event
         id: Number(t.id),
         eventName: String(ev?.name ?? rec.name ?? "Event"),
         location: loc || String(ev?.location ?? ""),
-        date: String(ev?.date_in_words ?? fmtDate(ev?.event_date)),
+        date: fmtDate(ev?.event_date) || String(ev?.date_in_words ?? ""),
         time: String(ev?.startTime ?? ""),
         price: Number(t.price ?? rec.price ?? 0),
         purchaseDate,

@@ -4,7 +4,7 @@ import { getSanityImageUrl } from "@/sanity/lib/image";
 
 export function BlogJsonLd({ post }: { post: BlogPost }) {
   const siteUrl = getSiteUrl();
-  const url = `${siteUrl}/blog/${post.slug}`;
+  const url = `${siteUrl}/blog/${encodeURIComponent(post.slug)}`;
   const image =
     getSanityImageUrl(post.seo?.ogImage ?? post.mainImage, 1200) || undefined;
 

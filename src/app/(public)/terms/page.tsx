@@ -21,7 +21,7 @@ export default function TermsOfUsePage() {
               Privacy Policy
             </h1>
             <p className="mt-2 text-white/70 text-sm sm:text-base">
-              Effective Date: [02/02/25]
+              Effective Date: February 2, 2025
             </p>
           </div>
         </div>

@@ -1,3 +1,5 @@
+import { getInitials, hasProfilePhoto } from "@/lib/profile-photo";
+
 interface KidCardProps {
   name: string;
   age: number;
@@ -12,6 +14,8 @@ const SCALLOP_PATH =
 export default function KidCard({ name, age, image, id, onViewProfile }: KidCardProps) {
   const gradientId = `kid-gradient-${id}`;
   const clipId = `kid-scallop-clip-${id}`;
+  const showPhoto = hasProfilePhoto(image);
+  const initials = getInitials(name);
 
   return (
     <div className="flex flex-col items-center w-full max-w-[300px]">
@@ -40,16 +44,33 @@ export default function KidCard({ name, age, image, id, onViewProfile }: KidCard
               <path d={SCALLOP_PATH} />
             </clipPath>
           </defs>
-          {/* Kid image clipped to scallop shape */}
-          <image
-            href={image}
-            x="0"
-            y="0"
-            width="56"
-            height="58"
-            preserveAspectRatio="xMidYMid slice"
-            clipPath={`url(#${clipId})`}
-          />
+          {showPhoto ? (
+            <image
+              href={image}
+              x="0"
+              y="0"
+              width="56"
+              height="58"
+              preserveAspectRatio="xMidYMid slice"
+              clipPath={`url(#${clipId})`}
+            />
+          ) : (
+            <>
+              <path d={SCALLOP_PATH} fill="#E8F4FC" />
+              <text
+                x="28"
+                y="32"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill="#3491E8"
+                fontSize="14"
+                fontWeight="700"
+                fontFamily="system-ui, sans-serif"
+              >
+                {initials}
+              </text>
+            </>
+          )}
           {/* Gradient border stroke */}
           <path
             d={SCALLOP_PATH}

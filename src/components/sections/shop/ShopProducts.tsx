@@ -6,10 +6,10 @@ import Image from "next/image";
 import ShopCategoryTabs from "./ShopCategoryTabs";
 import ShopProductCard from "./ShopProductCard";
 import { useCartStore } from "@/stores/useCartStore";
-import type { Product } from "./shopData";
+import { getShopCategories, type Product } from "./shopData";
 
 export default function ShopProducts({ products }: { products: Product[] }) {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState("all");
 
   const [hydrated, setHydrated] = useState(false);
   const cartItems = useCartStore((s) => s.items);
@@ -19,9 +19,17 @@ export default function ShopProducts({ products }: { products: Product[] }) {
     setHydrated(true);
   }, []);
 
+  const categories = useMemo(() => getShopCategories(products), [products]);
+
+  useEffect(() => {
+    if (!categories.some((c) => c.id === activeCategory)) {
+      setActiveCategory("all");
+    }
+  }, [categories, activeCategory]);
+
   const filteredProducts = useMemo(() => {
-    if (activeCategory === "All") return products;
-    return products.filter((p) => p.category === activeCategory.toLowerCase());
+    if (activeCategory === "all") return products;
+    return products.filter((p) => p.category === activeCategory);
   }, [products, activeCategory]);
 
   return (
@@ -65,8 +73,9 @@ export default function ShopProducts({ products }: { products: Product[] }) {
           </Link>
         )}
 
-        {/* Category tabs */}
+        {/* Category tabs — derived from products in the catalog */}
         <ShopCategoryTabs
+          categories={categories}
           activeCategory={activeCategory}
           onCategoryChange={setActiveCategory}
         />
