@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import MediaImage from "@/components/ui/MediaImage";
-import Link from "next/link";
+import EventDestination from "@/components/sections/events/EventDestination";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { eventService } from "@/lib/api/services";
@@ -66,9 +66,10 @@ export default function UpcomingEvents() {
 
         <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {upcomingEvents.map((event) => (
-            <Link
+            <EventDestination
               key={event.id}
-              href={`/events/${event.id}`}
+              id={event.id}
+              eventbriteUrl={event.eventbriteUrl}
               className="bg-[#F5F5F5] rounded-xl overflow-hidden transition-shadow hover:shadow-md"
             >
               <div className="p-3 pb-0">
@@ -122,7 +123,7 @@ export default function UpcomingEvents() {
                   </span>
                 </div>
               </div>
-            </Link>
+            </EventDestination>
           ))}
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { notFound, useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { eventService } from "@/lib/api/services";
@@ -22,14 +22,21 @@ export default function EventDetailPage() {
     return mapEventDetailFromApi(data as Record<string, unknown>);
   }, [data]);
 
+  useEffect(() => {
+    if (!event?.eventbriteUrl) return;
+    window.location.replace(event.eventbriteUrl);
+  }, [event]);
+
   if (!eventId) {
     notFound();
   }
 
-  if (isLoading) {
+  if (isLoading || event?.eventbriteUrl) {
     return (
       <section className="bg-white py-16 px-6">
-        <p className="text-center text-gray-500 text-sm">Loading event\u2026</p>
+        <p className="text-center text-gray-500 text-sm">
+          {event?.eventbriteUrl ? "Taking you to Eventbrite\u2026" : "Loading event\u2026"}
+        </p>
       </section>
     );
   }

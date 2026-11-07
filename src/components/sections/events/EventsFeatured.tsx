@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import MediaImage from "@/components/ui/MediaImage";
 import Link from "next/link";
+import EventDestination from "@/components/sections/events/EventDestination";
 import { useQuery } from "@tanstack/react-query";
 import { eventService, contestService } from "@/lib/api/services";
 import {
@@ -29,6 +30,7 @@ interface FeaturedEvent {
   location: string;
   price: string;
   badge: string;
+  eventbriteUrl: string;
 }
 
 interface EventCardItem {
@@ -38,6 +40,7 @@ interface EventCardItem {
   date: string;
   location: string;
   price: string;
+  eventbriteUrl?: string;
 }
 
 export default function EventsFeatured() {
@@ -88,6 +91,7 @@ export default function EventsFeatured() {
           location: upcomingEvents[0].location,
           price: upcomingEvents[0].price,
           badge: upcomingEvents[0].badge,
+          eventbriteUrl: upcomingEvents[0].eventbriteUrl,
         }
       : null;
 
@@ -188,8 +192,9 @@ function UpcomingContent({
           aria-hidden="true"
         />
 
-        <Link
-          href={`/events/${featuredEvent.id}`}
+        <EventDestination
+          id={featuredEvent.id}
+          eventbriteUrl={featuredEvent.eventbriteUrl}
           className="block relative z-10 rounded-2xl overflow-hidden aspect-[5/4] sm:aspect-[4/3] md:aspect-[16/9] lg:aspect-[16/8] transition-shadow hover:shadow-lg"
         >
           <MediaImage
@@ -248,7 +253,7 @@ function UpcomingContent({
               {featuredEvent.price}
             </span>
           </div>
-        </Link>
+        </EventDestination>
       </div>
 
       <div className="relative mt-14 md:mt-20">
@@ -326,9 +331,11 @@ function EventCardGrid({
   return (
     <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       {events.map((event) => (
-        <Link
+        <EventDestination
           key={event.id}
-          href={`${basePath}/${event.id}`}
+          id={event.id}
+          eventbriteUrl={event.eventbriteUrl}
+          fallbackHref={`${basePath}/${event.id}`}
           className="bg-[#F5F5F5] rounded-xl overflow-hidden transition-shadow hover:shadow-md"
         >
           <div className="p-3 pb-0">
@@ -371,7 +378,7 @@ function EventCardGrid({
               </span>
             </div>
           </div>
-        </Link>
+        </EventDestination>
       ))}
     </div>
   );

@@ -24,6 +24,7 @@ export interface EventDetail {
   description: string;
   highlights: ActivityHighlight[];
   tickets: TicketType[];
+  eventbriteUrl?: string;
 }
 
 export interface EventItem {

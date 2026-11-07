@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { userService, shopService } from "@/lib/api/services";
 import { parseDashboardPayload, parseShopListResponse } from "@/lib/api/data-mappers";
+import EventDestination from "@/components/sections/events/EventDestination";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const tabs = ["Classes", "Magazines", "Upcoming events", "Shop"] as const;
@@ -273,9 +274,11 @@ export default function Dashboard() {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                 {dash.events.map((event) => (
-                  <div
+                  <EventDestination
                     key={event.id}
-                    className="border border-gray-200 rounded-2xl p-4 bg-white shadow-card"
+                    id={event.id}
+                    eventbriteUrl={event.eventbriteUrl}
+                    className="block border border-gray-200 rounded-2xl p-4 bg-white shadow-card"
                   >
                     <div className="rounded-xl overflow-hidden mb-4">
                       <MediaImage
@@ -318,7 +321,7 @@ export default function Dashboard() {
                     <span className="text-2xl font-bold text-primary">
                       ${event.price}
                     </span>
-                  </div>
+                  </EventDestination>
                 ))}
               </div>
             )}

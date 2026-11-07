@@ -40,7 +40,26 @@ export type DashboardEvent = {
   location: string;
   price: number;
   image: string;
+  eventbriteUrl: string;
 };
+
+/** Absolute Eventbrite link when the API sent one, otherwise empty. */
+export function readEventbriteUrl(row: Record<string, unknown>): string {
+  const raw = row.eventbrite_url ?? row.eventbriteUrl ?? row.eventbriteurl;
+  const value = String(raw ?? "").trim();
+  if (!value || value === "null" || value === "None") return "";
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+}
+
+/** In-app event page, or the Eventbrite page when that URL is set. */
+export function eventHref(
+  id: string | number,
+  eventbriteUrl?: string | null,
+): { href: string; external: boolean } {
+  const href = readEventbriteUrl({ eventbrite_url: eventbriteUrl ?? "" });
+  if (href) return { href, external: true };
+  return { href: `/events/${id}`, external: false };
+}
 
 export function mapDashboardEvent(e: Record<string, unknown>): DashboardEvent {
   const loc = [e.brief_location1, e.brief_location2].filter(Boolean).join(", ");
@@ -56,6 +75,7 @@ export function mapDashboardEvent(e: Record<string, unknown>): DashboardEvent {
     location: loc || String(e.location ?? ""),
     price: Number(e.price ?? 0),
     image: mediaUrl(e.cover_image as string) || PLACEHOLDER_EVENT,
+    eventbriteUrl: readEventbriteUrl(e),
   };
 }
 
@@ -277,6 +297,7 @@ export function mapEventViewRow(row: Record<string, unknown>) {
       String(row.location ?? ""),
     price: priceNum ? `$${priceNum}` : "",
     badge: "Join us",
+    eventbriteUrl: readEventbriteUrl(row),
   };
 }
 
@@ -386,6 +407,7 @@ export function mapEventDetailFromApi(raw: Record<string, unknown>): EventDetail
     description: desc || "Details coming soon.",
     highlights: defaultHighlights(desc),
     tickets,
+    eventbriteUrl: readEventbriteUrl(raw),
   };
 }
 
