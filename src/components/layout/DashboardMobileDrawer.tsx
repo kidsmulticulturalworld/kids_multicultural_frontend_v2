@@ -58,9 +58,9 @@ export default function DashboardMobileDrawer({ isOpen, onClose }: DashboardMobi
             onClick={onClose}
           >
             <Image
-              src="/Logo.svg"
+              src="/logo.png"
               alt="Kids Multicultural World"
-              width={40}
+              width={41}
               height={36}
             />
           </Link>

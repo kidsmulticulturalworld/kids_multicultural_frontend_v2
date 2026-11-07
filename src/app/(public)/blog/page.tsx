@@ -22,12 +22,21 @@ export const metadata: Metadata = {
     url: "/blog",
     type: "website",
     siteName: "Kids Multicultural World",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Kids Multicultural World blog",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Blog | Kids Multicultural World",
     description:
       "Stories, tips, and cultural sparks from Kids Multicultural World — for families raising confident, creative kids.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -66,6 +75,10 @@ export default async function BlogPage() {
       "@type": "Organization",
       name: "Kids Multicultural World",
       url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/logo.png`,
+      },
     },
   };
 

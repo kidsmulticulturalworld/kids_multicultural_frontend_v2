@@ -33,9 +33,9 @@ export default function DashboardSidebar() {
         className="mt-5 mb-3 w-14 h-14 flex items-center justify-center bg-white/90 rounded-xl shadow-sm"
       >
         <Image
-          src="/Logo.svg"
+          src="/logo.png"
           alt="Kids Multicultural World"
-          width={40}
+          width={41}
           height={36}
         />
       </Link>

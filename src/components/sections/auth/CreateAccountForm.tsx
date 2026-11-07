@@ -93,7 +93,7 @@ export default function CreateAccountForm() {
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
             <Image
-              src="/Logo.svg"
+              src="/logo.png"
               alt="Kids Multicultural World"
               width={52}
               height={52}

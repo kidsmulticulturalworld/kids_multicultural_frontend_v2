@@ -29,6 +29,10 @@ export function BlogJsonLd({ post }: { post: BlogPost }) {
       "@type": "Organization",
       name: "Kids Multicultural World",
       url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/logo.png`,
+      },
     },
     mainEntityOfPage: {
       "@type": "WebPage",

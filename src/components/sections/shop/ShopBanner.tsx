@@ -107,7 +107,7 @@ export default function ShopBanner() {
                 Represent your culture. Represent your community. Represent Kids
                 Multicultural World!
               </p>
-              <p className="text-[#FC6B33] font-geist font-semibold text-sm md:text-base lg:text-lg leading-relaxed">
+              <p className="text-[#FC6B33] font-body font-semibold text-sm md:text-base lg:text-lg leading-relaxed">
                 All Kids Multicultural World Ambassadors are required to have an
                 official T-shirt.
               </p>

@@ -43,10 +43,17 @@ export function getSanityPublicConfig() {
   };
 }
 
+const DEFAULT_SITE_URL = "https://kidsmulticulturalworld.org";
+
+/**
+ * Canonical public origin for sitemaps, Open Graph, and JSON-LD.
+ * Never fall back to VERCEL_URL — that host is the deployment alias
+ * (*.vercel.app) and makes link previews and canonicals look like Vercel.
+ */
 export function getSiteUrl(): string {
-  return (
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ||
-    process.env.VERCEL_URL?.replace(/\/+$/, "").replace(/^/, "https://") ||
-    "http://localhost:3000"
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(
+    /\/+$/,
+    "",
   );
+  return configured || DEFAULT_SITE_URL;
 }

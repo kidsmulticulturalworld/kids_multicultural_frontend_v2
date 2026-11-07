@@ -61,10 +61,10 @@ export default function Footer() {
           {/* Left — Logo + contact info */}
           <div className="lg:col-span-5">
             <Image
-              src="/Logo.svg"
+              src="/logo.png"
               alt="Kids Multicultural World"
-              width={80}
-              height={72}
+              width={91}
+              height={80}
               className="w-[65px] lg:w-[80px] h-auto"
               loading="lazy"
             />

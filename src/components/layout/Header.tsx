@@ -119,9 +119,9 @@ export default function Header() {
             {/* Logo */}
             <Link href="/" className="shrink-0">
               <Image
-                src="/Logo.svg"
+                src="/logo.png"
                 alt="Kids Multicultural World"
-                width={40}
+                width={41}
                 height={36}
               />
             </Link>
@@ -236,9 +236,9 @@ export default function Header() {
           {/* Logo centered */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Image
-              src="/Logo.svg"
+              src="/logo.png"
               alt="Kids Multicultural World"
-              width={36}
+              width={37}
               height={32}
             />
           </Link>

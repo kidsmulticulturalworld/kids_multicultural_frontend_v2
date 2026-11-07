@@ -27,9 +27,9 @@ export default function NotFound() {
               aria-hidden
             />
             <Image
-              src="/Logo.svg"
+              src="/logo.png"
               alt="Kids Multicultural World"
-              width={120}
+              width={126}
               height={110}
               className="relative mx-auto drop-shadow-md"
               priority

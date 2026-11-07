@@ -92,15 +92,22 @@ export async function generateMetadata({
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt || post.publishedAt,
       authors: post.author?.name ? [post.author.name] : undefined,
-      images: ogImage
-        ? [{ url: ogImage, width: 1200, height: 630, alt: post.title }]
-        : undefined,
+      images: [
+        ogImage
+          ? { url: ogImage, width: 1200, height: 630, alt: post.title }
+          : {
+              url: "/og-image.png",
+              width: 1200,
+              height: 630,
+              alt: "Kids Multicultural World",
+            },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ogImage ? [ogImage] : undefined,
+      images: [ogImage || "/og-image.png"],
     },
     robots: post.seo?.noIndex
       ? { index: false, follow: false }
