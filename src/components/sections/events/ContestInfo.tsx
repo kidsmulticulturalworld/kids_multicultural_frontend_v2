@@ -112,78 +112,21 @@ function CountdownTimerDesktop({ deadline }: { deadline: string }) {
   );
 }
 
-function DisclaimerMobile({ contest }: { contest: ContestDetail }) {
+const VOTES_SUPPORT_TEXT =
+  "A portion of voting proceeds supports Kids Multicultural Foundation Inc., a 501(c)(3) nonprofit empowering children worldwide.";
+
+function Disclaimer({ contest }: { contest: ContestDetail }) {
   return (
     <div
-      className="relative"
+      className="bg-white text-[#1E1B0B] text-sm leading-[22px]"
       style={{
-        background: "#FFF9D9",
+        border: "1px solid #77777733",
         borderRadius: "12px",
         padding: "20px",
       }}
     >
-      {/* Alert icon — top-left inside the card on mobile */}
-      <Image
-        src="/contest-alert.svg"
-        alt=""
-        width={100}
-        height={125}
-        className="w-[80px] h-auto mb-3"
-        aria-hidden="true"
-      />
-
-      <div
-        style={{
-          fontSize: "14px",
-          lineHeight: "22px",
-          color: "#1E1B0B",
-        }}
-      >
-        <p className="mb-4">{contest.disclaimer}</p>
-        <p>
-          All votes go towards{" "}
-          <span className="font-semibold">{contest.votesOrg}</span>
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function DisclaimerDesktop({ contest }: { contest: ContestDetail }) {
-  return (
-    <div
-      className="relative overflow-visible"
-      style={{
-        background: "#FFF9D9",
-        borderRadius: "12px",
-        padding: "28px 20px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: "14px",
-          lineHeight: "22px",
-          color: "#1E1B0B",
-          paddingRight: "140px",
-        }}
-      >
-        <p className="mb-4">{contest.disclaimer}</p>
-        <p>
-          All votes go towards{" "}
-          <span className="font-semibold">{contest.votesOrg}</span>
-        </p>
-      </div>
-
-      {/* Alert icon — overlapping top-right on desktop */}
-      <Image
-        src="/contest-alert.svg"
-        alt=""
-        width={181}
-        height={227}
-        className="absolute w-[181px] h-auto"
-        style={{ top: "-9px", right: "-20px" }}
-        aria-hidden="true"
-      />
+      <p className="mb-4">{contest.disclaimer}</p>
+      <p>{VOTES_SUPPORT_TEXT}</p>
     </div>
   );
 }
@@ -252,7 +195,7 @@ export default function ContestInfo({ contest }: { contest: ContestDetail }) {
         <CountdownTimer deadline={contest.deadline} />
 
         {/* Disclaimer */}
-        <DisclaimerMobile contest={contest} />
+        <Disclaimer contest={contest} />
       </div>
 
       {/* ── Desktop: two-column card with border ── */}
@@ -328,7 +271,7 @@ export default function ContestInfo({ contest }: { contest: ContestDetail }) {
             style={{ gap: "20px" }}
           >
             <CountdownTimerDesktop deadline={contest.deadline} />
-            <DisclaimerDesktop contest={contest} />
+            <Disclaimer contest={contest} />
           </div>
         </div>
       </div>

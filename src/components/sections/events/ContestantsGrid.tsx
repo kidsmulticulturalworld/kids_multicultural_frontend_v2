@@ -57,16 +57,14 @@ export default function ContestantsGrid({
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
+      <h2 className="text-black font-semibold text-2xl md:text-[32px] mb-6 md:mb-8">
+        Contestants
+      </h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
         {contestants.map((contestant) => (
           <div
             key={contestant.id}
-            className="flex flex-col overflow-hidden"
-            style={{
-              borderRadius: "16px",
-              border: "3px solid rgba(150, 170, 180, 0.35)",
-              background: "rgba(0, 0, 0, 0.55)",
-            }}
+            className="flex flex-col overflow-hidden bg-white rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.12)]"
           >
             {/* Contestant photo — click to preview full image */}
             <button
@@ -76,7 +74,7 @@ export default function ContestantsGrid({
                   ? setPreviewContestant(contestant)
                   : undefined
               }
-              className={`relative aspect-square block w-full group ${
+              className={`relative aspect-[4/3] block w-full overflow-hidden border-b-[6px] border-[#3491E8] ${
                 hasProfilePhoto(contestant.image)
                   ? "cursor-zoom-in"
                   : "cursor-default"
@@ -90,64 +88,22 @@ export default function ContestantsGrid({
               <ContestantAvatar
                 name={contestant.name}
                 image={contestant.image}
-                className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                className="object-cover"
               />
             </button>
 
-            {/* Glassmorphism info bar — below the photo so nothing is covered */}
-            <div
-              style={{
-                background: "rgba(0, 0, 0, 0.55)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-                padding: "10px 10px 10px",
-              }}
-            >
-              {/* Name */}
-              <p className="text-white text-base md:text-lg font-semibold mb-2">
+            <div className="flex flex-col flex-1 p-3 md:p-4">
+              <p className="text-[#1E1E1E] text-sm md:text-base font-semibold mb-3 break-words">
                 {contestant.name}
               </p>
 
-              {/* Votes + Vote button */}
-              <div
-                className="flex items-center justify-between"
-                style={{
-                  background: "rgba(0, 0, 0, 0.45)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  borderRadius: "8px",
-                  padding: "6px 4px 6px 12px",
-                }}
-              >
-                <div
-                  className="flex items-center gap-2"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.08)",
-                    borderRadius: "6px",
-                    padding: "4px 6px 4px 10px",
-                  }}
-                >
-                  <span className="text-xs md:text-sm text-white/80">Total Votes:</span>
-                  <span
-                    className="text-sm md:text-base font-bold text-white"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.12)",
-                      borderRadius: "5px",
-                      padding: "2px 8px",
-                    }}
-                  >
-                    {contestant.totalVotes}
-                  </span>
-                </div>
-
+              <div className="mt-auto flex items-center justify-between gap-2">
+                <span className="text-xs md:text-sm text-[#1E1E1E]">
+                  Votes: <span className="font-semibold">{contestant.totalVotes}</span>
+                </span>
                 <button
                   onClick={() => setSelectedContestant(contestant)}
-                  className="bg-[#3B82F6] hover:bg-[#2563EB] text-white font-semibold transition-colors cursor-pointer"
-                  style={{
-                    borderRadius: "8px",
-                    padding: "6px 16px",
-                    fontSize: "13px",
-                  }}
+                  className="bg-[#3491E8] hover:bg-[#2563EB] text-white text-xs md:text-sm font-semibold px-4 py-1.5 rounded-[3px] transition-colors cursor-pointer"
                 >
                   Vote
                 </button>

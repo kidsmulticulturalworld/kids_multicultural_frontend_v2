@@ -184,10 +184,9 @@ export default function VoteModal({
               be owed or be repayable to Purchaser or Voters.
             </p>
             <p className="text-sm text-[#1E1E1E]/70 leading-relaxed">
-              All votes go towards{" "}
-              <span className="font-bold text-[#1E1E1E]">
-                AMERICA NATION MULTICULTURAL WORLD FOUNDATION ORG.
-              </span>
+              A portion of voting proceeds supports Kids Multicultural
+              Foundation Inc., a 501(c)(3) nonprofit empowering children
+              worldwide.
             </p>
           </div>
         </div>
