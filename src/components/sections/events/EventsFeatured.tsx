@@ -73,12 +73,21 @@ export default function EventsFeatured() {
       "results",
       "data",
     ]);
-    if (rows.length === 0 && Array.isArray(contestsRaw)) {
-      return (contestsRaw as unknown[]).map((r) =>
-        mapContestListRow(r as Record<string, unknown>)
-      );
-    }
-    return rows.map((r) => mapContestListRow(r as Record<string, unknown>));
+    const list =
+      rows.length === 0 && Array.isArray(contestsRaw)
+        ? (contestsRaw as unknown[])
+        : rows;
+    const now = Date.now();
+    // Only show contests that are active and haven't ended yet.
+    return list
+      .map((r) => r as Record<string, unknown>)
+      .filter((r) => {
+        if (r.activate === false) return false;
+        if (!r.end_date) return true;
+        const end = new Date(String(r.end_date)).getTime();
+        return Number.isNaN(end) || end > now;
+      })
+      .map((r) => mapContestListRow(r));
   }, [contestsRaw]);
 
   const featuredEvent: FeaturedEvent | null =
